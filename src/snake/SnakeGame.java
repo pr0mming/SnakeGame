@@ -26,7 +26,7 @@ public class SnakeGame extends JFrame {
     private JLabel [][] Matriz_Label;
     private Image Icon;
     private JButton Restart;
-    private static JLabel Points, Lenght;
+    private static JLabel Points, Lenght, Time_Bonus;
     private int x, y;
     private static Gameplay Play;
     private static Color Background;
@@ -42,16 +42,12 @@ public class SnakeGame extends JFrame {
         KeyboardFocusManager m = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         Motion = new Time();
         m.addKeyEventDispatcher(new Events());
-        StartGame();               
-    }       
-    
-    private void StartGame() {
-        Motion.StartMotion(0);
-    }
+        Motion.StartMotion(0);             
+    }   
     
     private boolean TypographyImport() {
         try {
-            Font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("/resources/square-deal.ttf").openStream());
+            Font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ga.registerFont(Font);
             return true;
@@ -74,17 +70,24 @@ public class SnakeGame extends JFrame {
                 Panel.add(Matriz_Label[i][j]);
             }
         
-        Points = new JLabel(Points+" Points", SwingConstants.CENTER);
-        Points.setFont(new Font((Import_font)?"Square Deal":"Consolas", Font.PLAIN, 26));
+        Points = new JLabel();
+        Points.setHorizontalAlignment(SwingConstants.CENTER);
+        Points.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
         Points.setForeground(Color.white);
         UpdatePoints(0);
         Lenght = new JLabel();
-        Lenght.setFont(new Font((Import_font)?"Square Deal":"Consolas", Font.PLAIN, 26));
+        Lenght.setHorizontalAlignment(SwingConstants.CENTER);
+        Lenght.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
         Lenght.setForeground(Color.white);
-        Restart = new JButton("Restart");   
-        Restart.setFont(new Font((Import_font)?"Square Deal":"Consolas", Font.PLAIN, 26));
-        Restart.setPreferredSize(new Dimension(120, 40));       
-        Restart.setBounds(6, 150, 30, 25);
+        Time_Bonus = new JLabel();
+        Time_Bonus.setHorizontalAlignment(SwingConstants.CENTER);
+        Time_Bonus.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
+        Time_Bonus.setForeground(Color.white);
+        UpdateTimeBonus(0);
+        Restart = new JButton("RESTART");   
+        Restart.setHorizontalAlignment(SwingConstants.CENTER);
+        Restart.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
+        Restart.setPreferredSize(new Dimension(120, 40));
         Restart.setBorder(new BordeRadio(10));
         Restart.setForeground(Color.white);
         Restart.setBackground(Background);
@@ -110,27 +113,20 @@ public class SnakeGame extends JFrame {
         });       
         SecondaryPanel.add(Points);
         SecondaryPanel.add(Lenght);
+        SecondaryPanel.add(Time_Bonus);
         SecondaryPanel.add(Restart);
-    }
-    
-    public static void UpdatePoints(int p) {
-        Points.setText(p+" Points");
-    }
-    
-    public static void UpdateLenght(int l) {
-        Lenght.setText("Lenght "+l);
-    }
+    }       
     
     private void Content() {
         x= 40; y= 40;
         Background = Color.black;
         Panel = new JPanel(new GridLayout(x, y, 0, 0));
-        Panel.setPreferredSize(new Dimension(700, 720));
+        Panel.setPreferredSize(new Dimension(500, 700));
         Panel.setBackground(Color.white);
         Panel.setBorder(BorderFactory.createLineBorder(Background, 5));
         Panel.setVisible(true);        
-        SecondaryPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        SecondaryPanel.setPreferredSize(new Dimension(120, 90));
+        SecondaryPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        SecondaryPanel.setPreferredSize(new Dimension(500, 120));
         SecondaryPanel.setBorder(new EmptyBorder(10, 25, 25, 25));
         SecondaryPanel.setAlignmentY(JComponent.BOTTOM_ALIGNMENT);
         SecondaryPanel.setBackground(Background);
@@ -139,7 +135,7 @@ public class SnakeGame extends JFrame {
     private void Window() {
         WindowGame = new JFrame("Snake");                   
         WindowGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        WindowGame.setPreferredSize(new Dimension(700, 800));
+        WindowGame.setPreferredSize(new Dimension(700, 900));
         WindowGame.getContentPane().add(Panel);
         WindowGame.getContentPane().add(SecondaryPanel, BorderLayout.SOUTH);
         Icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
@@ -149,6 +145,18 @@ public class SnakeGame extends JFrame {
         WindowGame.setVisible(true);
         WindowGame.setLocationRelativeTo(null);
         WindowGame.pack();
+    }
+    
+    public static void UpdatePoints(int p) {
+        Points.setText(p+" POINTS");
+    }
+    
+    public static void UpdateLenght(int l) {
+        Lenght.setText("LENGHT: "+l);
+    }
+    
+    public static void UpdateTimeBonus(int t) {
+        Time_Bonus.setText("BONUS: "+t);
     }
     
     public static Time getTime() {

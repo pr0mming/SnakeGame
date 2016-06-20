@@ -18,7 +18,10 @@ import javax.swing.border.Border;
  */
 
 public class BordeRadio implements Border {
-
+    
+    /*
+        If you see the rounded edges of the button "Restart" this class does!
+    */
     private final int Radio;
 
     BordeRadio(int radio) {

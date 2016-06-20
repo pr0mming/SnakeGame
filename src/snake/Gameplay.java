@@ -43,7 +43,12 @@ public class Gameplay {
         Lenght = Snake.size()/2;
         Food();
     }
-    
+    /*    
+        This method allows you to see if the coordinates given are block food 
+        if it is not then could belong to a block bonus: 
+        If the special color (bonus) the effect is activated and the snake will double,
+        also generate new food.
+    */
     private void Eat(int x, int y) {
         int[] c = {x, y};
         
@@ -67,7 +72,11 @@ public class Gameplay {
         SnakeGame.UpdateLenght(Lenght);
         YouWin();
     }
-    
+    /*
+        This method allows the snake can grow depending on how much. 
+        For example: If I want to stretch to 3 blocks then 3 x 2 = 6 and x = 6, 
+        the same if I want to stretch 2 blocks then 2 x 2 = 4 and x = 4. so on ...   
+    */
     private void DuplicateSnake(int x) {
         int n = x;
         while(n > 0) {
@@ -75,12 +84,16 @@ public class Gameplay {
             n--;
         }
     }
-    
+    //  Calculates and updates the score
     private void GeneratePoints(int p) {
         Points+=p;
         SnakeGame.UpdatePoints(Points);
-    }
-    
+    }    
+    /*
+        lim takes the random value and according to this value meals that rely 
+        on special color is generated, the coordinates are stored in an array 
+        to know exactly where they are and want to delete them at once ...
+    */
     private void GenerateBonus(int lim) {
         while (lim > 0) {
             IndexBonus.add((int) Math.floor(Math.random()*Matriz[0].length));
@@ -89,7 +102,12 @@ public class Gameplay {
             lim--;
         }
     }
-    
+    /*        
+        This method is very important. 
+        Can generate a block of food once a block of food disappears. 
+        the coordinates of the block in two variables is stored, if the special color 
+        is chosen (bonus) will be generated n amount of new food, all randomly ...
+    */
     private void Food() {
         x_food = (int) Math.floor(Math.random()*Matriz.length);
         y_food = (int) Math.floor(Math.random()*Matriz[0].length);
@@ -104,7 +122,10 @@ public class Gameplay {
             }
         }
     }
-    
+    /*
+        This method positions the snake from coordinates and stretched to the 
+        length defined above (variable Lenght_snake)
+    */
     private void GenerateSnake() {        
         int x = 15; int y = 20;
         
@@ -117,7 +138,11 @@ public class Gameplay {
         Lenght = Snake.size()/2;
         SnakeGame.UpdateLenght(Lenght);
     }     
-    
+    /*
+        This method mobilizes the snake, when a block previous to 
+        this it moves into position and does this each, 
+        all at the reference part of the first block, this is done recursively moves
+    */
     private void Reposition(int x, int y, int index) {
         int[] array = {x, y};
         if(index >= Snake.size()) {
@@ -134,7 +159,10 @@ public class Gameplay {
             Reposition(array[0], array[1], index+=2);
         }
     }
-    
+    /*
+        This method gives direction to the snake, the snake further 
+        determines whether "ate herself" and if the next block exists
+    */
     public void MovingSnake(String tecla) {
             if(tecla.equals("Right") && !Direction.equals("Left") && Snake.get(1) < Matriz[0].length-1) {
                 if(Matriz[Snake.get(0)][(Snake.get(1)+1)].getBackground() != SnakeColor) {     
@@ -172,21 +200,28 @@ public class Gameplay {
                         }
         
     }
-    
+    /*        
+        This method receives an ArrayList, 
+        covers half of its length and takes the first two elements to locate 
+        and "restore" its color and edge finally removes ...
+    */
     private void DeleteArray(ArrayList<Integer> x) {
         int n = x.size()/2;
         while(n > 0) {
-            Matriz[x.get(0)][x.get(1)].setBackground(SnakeGame.getBackgroundGame());
             Matriz[x.get(0)][x.get(1)].setBorder(BorderFactory.createLineBorder(Color.black));
+            Matriz[x.get(0)][x.get(1)].setBackground(SnakeGame.getBackgroundGame());       
             x.remove(1);
             x.remove(0);
             n--;
         }
     }
-    
+    /*
+        This method restarts the game, restore points, stops and restore times, 
+        regenerates the snake, etc ...
+    */
     public void RestartEnvironment(boolean r) {                  
-        Time.StopTime();
-        Time.RestoreSpeed();
+        SnakeGame.getTime().StopTime();
+        SnakeGame.getTime().RestoreSpeed();
         DeleteArray(Snake);
         DeleteArray(IndexBonus);
         GenerateSnake();
@@ -196,14 +231,26 @@ public class Gameplay {
         SnakeGame.UpdatePoints(Points);
         JOptionPane.showMessageDialog(null, (!r)?"Sorry ... You've lost but starts a new game!":"It starts a new game :D", "Game Over", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+    /*
+        It determines if the snake has the length of at 
+        least the product of the rows and columns least two ...
+    */
     private void YouWin() {
         if (Lenght >= ((Matriz[0].length * Matriz.length)-2)) {
             JOptionPane.showMessageDialog(null, "LOL... you must be crazy to want to see this message", "Impossible", JOptionPane.INFORMATION_MESSAGE);
             RestartEnvironment(true);
         }
     }
-    
+    /*
+        When time is running out bonus, 
+        bonus blocks are removed and generates a new block of food
+    */
+    public void DeleteBonus() {
+        DeleteArray(IndexBonus);
+        Matriz[x_food][y_food].setBackground(SnakeGame.getBackgroundGame());
+        Food();
+    }
+    // -- Down here are just getters --
     public Color getSnakeColor() {
         return SnakeColor;
     }
@@ -246,5 +293,9 @@ public class Gameplay {
     
     public int getLenght() {
         return Lenght;
+    }
+    
+    public ArrayList<Integer> getIndexBonus() {
+        return IndexBonus;
     }
 }
