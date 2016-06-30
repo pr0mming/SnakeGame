@@ -1,0 +1,5 @@
+#nb
+
+nbproject/private/*
+test/*
+build/*.properties
