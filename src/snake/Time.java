@@ -60,7 +60,7 @@ public class Time {
         Delay = 500;
         Goal = 100;
         Time_motion = new Timer[Action.length];
-        Status_time_motion = new boolean[Time_motion.length];
+        Status_time_motion = new boolean[Time_motion.length];      
         Status_ledeffect = false;
         Time_bonus = (900 * 5); //A second can be approximated to 900 milliseconds, multiplied by five, are 13500 milliseconds (5 seconds)
         LocateTimes();

@@ -129,7 +129,7 @@ public class Gameplay {
     */
     private void GenerateSnake() {  
         int x = (int) Math.floor(Math.random()*Matriz.length);
-        int y = (int) Math.floor(Math.random()*Matriz[0].length);
+        int y = (int) Math.floor((Math.random()*Matriz[0].length - 1) + 5);
         
         Position_condition = (Matriz[0].length - y) >= (y+1);
         
@@ -137,8 +137,7 @@ public class Gameplay {
             Matriz[x][i].setBackground(SnakeColor);
             Snake.add(x);
             Snake.add(i);
-        }
-        
+        }      
     
         Direction = (Position_condition)?"Left":"Right";
         Lenght = Snake.size()/2;

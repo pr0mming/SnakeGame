@@ -42,7 +42,7 @@ public class SnakeGame extends JFrame {
         KeyboardFocusManager m = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         Motion = new Time();
         m.addKeyEventDispatcher(new Events());
-        Motion.StartMotion((Play.getPositionCondition())?0:1);             
+        Motion.StartMotion((Play.getPositionCondition())?0:1); 
     }   
     
     private boolean TypographyImport() {
