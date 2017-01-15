@@ -19,7 +19,7 @@ import javax.swing.Timer;
 public class Time {
     
     private int delay;
-    private SnakeGame instanceGame;
+    private GameScene instanceGame;
     
     private ActionListener[] actions = {
         new ActionListener() {
@@ -61,7 +61,7 @@ public class Time {
     private boolean statusBonus;
     private int timeBonus, goal;
     
-    public Time(SnakeGame instanceGame) {
+    public Time(GameScene instanceGame) {
         this.instanceGame = instanceGame;
         delay = 500;
         goal = 100;
@@ -87,11 +87,10 @@ public class Time {
     */
     public void actuate(int e, int l) {
         for (int i = 0; i < l; i++) {
-            if(i == e) {
+            if(i == e) 
                 startMotion(i);
-            } else {
-                stopMotion(i);
-            }
+            else 
+                stopMotion(i);    
         }
     }
     /*
@@ -103,11 +102,9 @@ public class Time {
     private void createBonus() {
         timerBonus = new Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                instanceGame.updateTimeBonus(timeBonus);
                 timeBonus-=timerBonus.getDelay();             
                 instanceGame.getPanelGame().setBackground((instanceGame.getPanelGame().getBackground() == Color.white)?Color.black:Color.white);
                 if (instanceGame.getPlay().getCurrentColor() != instanceGame.getPlay().getSpecialColor() || timeBonus <= 0) {
-                    instanceGame.updateTimeBonus(timeBonus);
                     timeBonus = (900 * 5);
                     instanceGame.getPlay().deleteBonus();
                     instanceGame.getPanelGame().setBackground(Color.white);

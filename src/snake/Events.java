@@ -19,9 +19,9 @@ public class Events implements KeyEventDispatcher {
     /*
         This class is responsible for the controls ...
     */
-    private SnakeGame instanceGame;
+    private GameScene instanceGame;
     
-    public Events(SnakeGame instanceGame) {
+    public Events(GameScene instanceGame) {
         super();
         this.instanceGame = instanceGame;
     }
