@@ -22,15 +22,15 @@ public class BordeRadio implements Border {
     /*
         If you see the rounded edges of the button "Restart" this class does!
     */
-    private final int Radio;
+    private final int radio;
 
     BordeRadio(int radio) {
-        this.Radio = radio;
+        this.radio = radio;
     }
    
     @Override
     public Insets getBorderInsets(Component c) {
-        return new Insets(this.Radio+1, this.Radio+1, this.Radio+2, this.Radio);
+        return new Insets(this.radio+1, this.radio+1, this.radio+2, this.radio);
     }
     
     @Override
@@ -40,7 +40,7 @@ public class BordeRadio implements Border {
    
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        g.drawRoundRect(x, y, width-1, height-1, Radio, Radio);
+        g.drawRoundRect(x, y, width-1, height-1, radio, radio);
     }
     
 }

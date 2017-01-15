@@ -20,36 +20,36 @@ import javax.swing.border.EmptyBorder;
 
 public class SnakeGame extends JFrame {
 
-    private JFrame WindowGame;
-    private static JPanel Panel;
-    private JPanel SecondaryPanel;
-    private JLabel [][] Matriz_Label;
-    private Image Icon;
-    private JButton Restart;
-    private static JLabel Points, Lenght, Time_Bonus;
+    private JFrame windowGame;
+    private JPanel panelGame;
+    private JPanel panelStatistics;
+    private JLabel [][] matrix;
+    private JButton buttonRestart;
+    private JLabel score, len, timeBonus;
     private int x, y;
-    private static Gameplay Play;
-    private static Color Background;
-    private static Time Motion;
-    private boolean Import_font;
-    private Font Font;
+    private Gameplay play;
+    private Color background;
+    private Time motion;
+    private Font font;
+    private KeyboardFocusManager keyboardFocus;
+    private Events keyEventDispatcher;
     
     public SnakeGame() {               
-        Content();
-        Button();
-        Window(); 
-        Play= new Gameplay(Matriz_Label);
-        KeyboardFocusManager m = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        Motion = new Time();
-        m.addKeyEventDispatcher(new Events());
-        Motion.StartMotion((Play.getPositionCondition())?0:1); 
+        createPanels();
+        createButtons();
+        createWindow(); 
+        play = new Gameplay(matrix, this);
+        keyEventDispatcher = new Events(this);
+        keyboardFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        motion = new Time(this);
+        addKeyboardFocus();
     }   
     
-    private boolean TypographyImport() {
+    private boolean typographyImport() {
         try {
-            Font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
+            font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ga.registerFont(Font);
+            ga.registerFont(font);
             return true;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Oops ... an error has occurred in the importation of typography. It will try to pick another ;)", "Error", JOptionPane.ERROR_MESSAGE);
@@ -57,121 +57,130 @@ public class SnakeGame extends JFrame {
         }
     }
 
-    private void Button() {
-        Matriz_Label = new JLabel[x][y];
-        Import_font = TypographyImport();
-        for (int i = 0; i < Matriz_Label.length; i++)
-            for (int j = 0; j < Matriz_Label[i].length; j++) {                            
-                Matriz_Label[i][j] = new JLabel();               
-                Matriz_Label[i][j].setBackground(Background);
-                Matriz_Label[i][j].setOpaque(true);
-                Matriz_Label[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
-                Matriz_Label[i][j].setPreferredSize(new Dimension(3, 3));               
-                Panel.add(Matriz_Label[i][j]);
+    private void createButtons() {
+        matrix = new JLabel[x][y];
+        boolean importFont;
+        importFont = typographyImport();
+        
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix[i].length; j++) {                            
+                matrix[i][j] = new JLabel();               
+                matrix[i][j].setBackground(background);
+                matrix[i][j].setOpaque(true);
+                matrix[i][j].setPreferredSize(new Dimension(3, 3));               
+                panelGame.add(matrix[i][j]);
             }
         
-        Points = new JLabel();
-        Points.setHorizontalAlignment(SwingConstants.CENTER);
-        Points.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
-        Points.setForeground(Color.white);
-        UpdatePoints(0);
-        Lenght = new JLabel();
-        Lenght.setHorizontalAlignment(SwingConstants.CENTER);
-        Lenght.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
-        Lenght.setForeground(Color.white);
-        Time_Bonus = new JLabel();
-        Time_Bonus.setHorizontalAlignment(SwingConstants.CENTER);
-        Time_Bonus.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
-        Time_Bonus.setForeground(Color.white);
-        UpdateTimeBonus(0);
-        Restart = new JButton("RESTART");   
-        Restart.setHorizontalAlignment(SwingConstants.CENTER);
-        Restart.setFont(new Font((Import_font)?"Aldo the Apache":"Consolas", Font.PLAIN, 26));
-        Restart.setPreferredSize(new Dimension(120, 40));
-        Restart.setBorder(new BordeRadio(10));
-        Restart.setForeground(Color.white);
-        Restart.setBackground(Background);
-        Restart.setFocusable(true);
-        Restart.addActionListener(new ActionListener() {
+        score = new JLabel();
+        score.setHorizontalAlignment(SwingConstants.CENTER);
+        score.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        score.setForeground(Color.white);
+        updateScore(0);
+        len = new JLabel();
+        len.setHorizontalAlignment(SwingConstants.CENTER);
+        len.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        len.setForeground(Color.white);
+        timeBonus = new JLabel();
+        timeBonus.setHorizontalAlignment(SwingConstants.CENTER);
+        timeBonus.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        timeBonus.setForeground(Color.white);
+        updateTimeBonus(0);
+        buttonRestart = new JButton("RESTART");   
+        buttonRestart.setHorizontalAlignment(SwingConstants.CENTER);
+        buttonRestart.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        buttonRestart.setPreferredSize(new Dimension(120, 40));
+        buttonRestart.setBorder(new BordeRadio(10));
+        buttonRestart.setForeground(Color.white);
+        buttonRestart.setBackground(background);
+        buttonRestart.setFocusable(true);
+        buttonRestart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SnakeGame.Play.RestartEnvironment(true);
+                play.restartGame();
             }
         });   
-        Restart.addMouseListener(new java.awt.event.MouseAdapter() {
+        buttonRestart.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                Restart.setBackground(Color.white);
-                Restart.setForeground(Color.black);
+                buttonRestart.setBackground(Color.white);
+                buttonRestart.setForeground(Color.black);
             }
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                Restart.setBackground(Background);
-                Restart.setForeground(Color.white);
+                buttonRestart.setBackground(background);
+                buttonRestart.setForeground(Color.white);
             }
         });       
-        SecondaryPanel.add(Points);
-        SecondaryPanel.add(Lenght);
-        SecondaryPanel.add(Time_Bonus);
-        SecondaryPanel.add(Restart);
+        panelStatistics.add(score);
+        panelStatistics.add(len);
+        panelStatistics.add(timeBonus);
+        panelStatistics.add(buttonRestart);
     }       
     
-    private void Content() {
+    private void createPanels() {
         x= 40; y= 40;
-        Background = Color.black;
-        Panel = new JPanel(new GridLayout(x, y, 0, 0));
-        Panel.setPreferredSize(new Dimension(500, 700));
-        Panel.setBackground(Color.white);
-        Panel.setBorder(BorderFactory.createLineBorder(Background, 5));
-        Panel.setVisible(true);        
-        SecondaryPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        SecondaryPanel.setPreferredSize(new Dimension(500, 120));
-        SecondaryPanel.setBorder(new EmptyBorder(10, 25, 25, 25));
-        SecondaryPanel.setAlignmentY(JComponent.BOTTOM_ALIGNMENT);
-        SecondaryPanel.setBackground(Background);
+        background = Color.black;
+        panelGame = new JPanel(new GridLayout(x, y, 0, 0));
+        panelGame.setPreferredSize(new Dimension(500, 700));
+        panelGame.setBackground(Color.white);
+        panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
+        panelGame.setVisible(true);        
+        panelStatistics = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelStatistics.setPreferredSize(new Dimension(500, 120));
+        panelStatistics.setBorder(new EmptyBorder(10, 25, 25, 25));
+        panelStatistics.setAlignmentY(JComponent.BOTTOM_ALIGNMENT);
+        panelStatistics.setBackground(background);
     }
     
-    private void Window() {
-        WindowGame = new JFrame("Snake");                   
-        WindowGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        WindowGame.setPreferredSize(new Dimension(700, 900));
-        WindowGame.getContentPane().add(Panel);
-        WindowGame.getContentPane().add(SecondaryPanel, BorderLayout.SOUTH);
-        Icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
-        WindowGame.setIconImage(Icon);
-        WindowGame.setFocusable(true);
-        WindowGame.setResizable(false);
-        WindowGame.setVisible(true);
-        WindowGame.setLocationRelativeTo(null);
-        WindowGame.pack();
+    private void createWindow() {
+        windowGame = new JFrame("Snake");                   
+        windowGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        windowGame.setPreferredSize(new Dimension(700, 900));
+        windowGame.getContentPane().add(panelGame);
+        windowGame.getContentPane().add(panelStatistics, BorderLayout.SOUTH);
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
+        windowGame.setIconImage(icon);
+        windowGame.setFocusable(true);
+        windowGame.setResizable(false);
+        windowGame.setVisible(true);
+        windowGame.setLocationRelativeTo(null);
+        windowGame.pack();
     }
     
-    public static void UpdatePoints(int p) {
-        Points.setText(p+" POINTS");
+    public void updateScore(int p) {
+        score.setText("SCORE: "+p);
     }
     
-    public static void UpdateLenght(int l) {
-        Lenght.setText("LENGHT: "+l);
+    public void updateLenght(int l) {
+        len.setText("LENGHT: "+l);
     }
     
-    public static void UpdateTimeBonus(int t) {
-        Time_Bonus.setText("BONUS: "+t);
+    public void updateTimeBonus(int t) {
+        timeBonus.setText("BONUS: "+t);
     }
     
-    public static Time getTime() {
-        return Motion;
+    public Time getTime() {
+        return this.motion;
     }
     
-    public static JPanel getPanel() {
-        return Panel;
+    public JPanel getPanelGame() {
+        return this.panelGame;
     }
     
-    public static Gameplay getPlay() {
-        return Play;
+    public Gameplay getPlay() {
+        return this.play;
     }
     
-    public static Color getBackgroundGame() {
-        return Background;
+    public Color getBackgroundGame() {
+        return this.background;
+    }
+    
+    public void addKeyboardFocus() {
+        this.keyboardFocus.addKeyEventDispatcher(keyEventDispatcher);
+    }
+    
+    public void removeKeyFocus() {
+        this.keyboardFocus.removeKeyEventDispatcher(keyEventDispatcher);
     }
     
     public static void main(String[] args) {

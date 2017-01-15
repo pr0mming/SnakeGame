@@ -19,35 +19,42 @@ public class Events implements KeyEventDispatcher {
     /*
         This class is responsible for the controls ...
     */
+    private SnakeGame instanceGame;
+    
+    public Events(SnakeGame instanceGame) {
+        super();
+        this.instanceGame = instanceGame;
+    }
+    
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         if(e.getID() == KeyEvent.KEY_PRESSED) {
             if(e.getKeyCode() == KeyEvent.VK_LEFT) {   
-                if (!SnakeGame.getPlay().getDirection().equals("Right")) {
-                    SnakeGame.getPlay().MovingSnake("Left");
-                    SnakeGame.getTime().Actuate(0, SnakeGame.getTime().AmountTimers());
+                if (!instanceGame.getPlay().getDirection().equals("Right")) {
+                    instanceGame.getPlay().moveSnake("Left");
+                    instanceGame.getTime().actuate(0, this.instanceGame.getTime().getAmountTimers());
                 }
             } else
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT) {         
-                    if (!SnakeGame.getPlay().getDirection().equals("Left")) {
-                        SnakeGame.getPlay().MovingSnake("Right");
-                        SnakeGame.getTime().Actuate(1, SnakeGame.getTime().AmountTimers());
+                    if (!this.instanceGame.getPlay().getDirection().equals("Left")) {
+                        this.instanceGame.getPlay().moveSnake("Right");
+                        this.instanceGame.getTime().actuate(1, this.instanceGame.getTime().getAmountTimers());
                     }
                 } else 
                     if(e.getKeyCode() == KeyEvent.VK_UP) {
-                        if (!SnakeGame.getPlay().getDirection().equals("Down")) {
-                            SnakeGame.getPlay().MovingSnake("Up");
-                            SnakeGame.getTime().Actuate(2, SnakeGame.getTime().AmountTimers());
+                        if (!this.instanceGame.getPlay().getDirection().equals("Down")) {
+                            this.instanceGame.getPlay().moveSnake("Up");
+                            this.instanceGame.getTime().actuate(2, this.instanceGame.getTime().getAmountTimers());
                         }
                     } else
                         if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            if(!SnakeGame.getPlay().getDirection().equals("Up")) {
-                                SnakeGame.getPlay().MovingSnake("Down");
-                                SnakeGame.getTime().Actuate(3, SnakeGame.getTime().AmountTimers());
+                            if(!this.instanceGame.getPlay().getDirection().equals("Up")) {
+                                this.instanceGame.getPlay().moveSnake("Down");
+                                this.instanceGame.getTime().actuate(3, this.instanceGame.getTime().getAmountTimers());
                             }
                         }       
-            SnakeGame.getTime().ValueSpeed(SnakeGame.getPlay().getPoints());
-            SnakeGame.getTime().StartLEDEffect();
+            this.instanceGame.getTime().valueSpeed(this.instanceGame.getPlay().getScore());
+            this.instanceGame.getTime().startBonus();
         }
         return false;
     }
