@@ -29,28 +29,30 @@ public class Events implements KeyEventDispatcher {
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         if(e.getID() == KeyEvent.KEY_PRESSED) {
+            String direction = instanceGame.getPlay().getDirection();
+            
             if(e.getKeyCode() == KeyEvent.VK_LEFT) {   
-                if (!instanceGame.getPlay().getDirection().equals("Right")) {
+                if (!direction.equals("Right")) {
                     instanceGame.getPlay().moveSnake("Left");
-                    instanceGame.getTime().actuate(0, this.instanceGame.getTime().getAmountTimers());
+                    instanceGame.getTime().actuate(0);
                 }
             } else
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT) {         
-                    if (!this.instanceGame.getPlay().getDirection().equals("Left")) {
+                    if (!direction.equals("Left")) {
                         this.instanceGame.getPlay().moveSnake("Right");
-                        this.instanceGame.getTime().actuate(1, this.instanceGame.getTime().getAmountTimers());
+                        this.instanceGame.getTime().actuate(1);
                     }
                 } else 
                     if(e.getKeyCode() == KeyEvent.VK_UP) {
-                        if (!this.instanceGame.getPlay().getDirection().equals("Down")) {
+                        if (!direction.equals("Down")) {
                             this.instanceGame.getPlay().moveSnake("Up");
-                            this.instanceGame.getTime().actuate(2, this.instanceGame.getTime().getAmountTimers());
+                            this.instanceGame.getTime().actuate(2);
                         }
                     } else
                         if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            if(!this.instanceGame.getPlay().getDirection().equals("Up")) {
+                            if(!direction.equals("Up")) {
                                 this.instanceGame.getPlay().moveSnake("Down");
-                                this.instanceGame.getTime().actuate(3, this.instanceGame.getTime().getAmountTimers());
+                                this.instanceGame.getTime().actuate(3);
                             }
                         }       
             this.instanceGame.getTime().valueSpeed(this.instanceGame.getPlay().getScore());

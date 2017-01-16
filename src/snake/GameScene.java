@@ -27,7 +27,7 @@ public class GameScene extends JFrame {
     private JButton buttonRestart, buttonMenu;
     private JLabel score, len;
     private int x, y;
-    private Play play;
+    private ClientPlay play;
     private Color background;
     private Time motion;
     private Font font;
@@ -38,7 +38,7 @@ public class GameScene extends JFrame {
         createPanels();
         createButtons();
         createWindow(); 
-        play = new Play(matrix, this);
+        play = new ClientPlay(this.matrix, this);
         keyEventDispatcher = new Events(this);
         keyboardFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         motion = new Time(this);
@@ -158,7 +158,6 @@ public class GameScene extends JFrame {
         windowGame.setFocusable(true);
         windowGame.setResizable(false);
         windowGame.setVisible(true);
-        windowGame.setLocationRelativeTo(null);
         windowGame.pack();
     }
     
@@ -170,12 +169,24 @@ public class GameScene extends JFrame {
         return new double[]{width, height};
     }
     
+    public void destroyScene() {
+        windowGame.dispose();
+    }
+    
     public void updateScore(int p) {
         score.setText("SCORE: "+p);
     }
     
     public void updateLenght(int l) {
         len.setText("LENGHT: "+l);
+    }
+    
+    public void addKeyboardFocus() {
+        this.keyboardFocus.addKeyEventDispatcher(keyEventDispatcher);
+    }
+    
+    protected void removeKeyFocus() {
+        this.keyboardFocus.removeKeyEventDispatcher(keyEventDispatcher);
     }
     
     public Time getTime() {
@@ -186,29 +197,12 @@ public class GameScene extends JFrame {
         return this.panelGame;
     }
     
-    public Play getPlay() {
+    public ClientPlay getPlay() {
         return this.play;
     }
     
     public Color getBackgroundGame() {
         return this.background;
-    }
-    
-    public void addKeyboardFocus() {
-        this.keyboardFocus.addKeyEventDispatcher(keyEventDispatcher);
-    }
-    
-    public void removeKeyFocus() {
-        this.keyboardFocus.removeKeyEventDispatcher(keyEventDispatcher);
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GameScene();
-            }
-        });
     }
     
 }

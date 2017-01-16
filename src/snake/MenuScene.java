@@ -37,10 +37,10 @@ public class MenuScene extends JFrame {
     private Font font;
     
     public MenuScene() {
-        createWindow();
+        createScene();
     }
     
-    private void createWindow() {
+    private void createScene() {
         windowMenu = new JFrame("Snake");                    
         double[] screen = calculateScreen();
         windowMenu.setPreferredSize(new Dimension((int) screen[0], (int) screen[1]));
@@ -91,6 +91,12 @@ public class MenuScene extends JFrame {
         buttonSpecial.setBackground(Color.white);
         buttonSpecial.setBorder(new BordeRadio(10));
         buttonSpecial.setFocusable(true);
+        buttonSpecial.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                windowMenu.dispose();
+            }
+        });
         panelButtons.add(buttonSpecial);
         
         windowMenu.getContentPane().add(panelLogo, BorderLayout.NORTH);
@@ -102,7 +108,6 @@ public class MenuScene extends JFrame {
         windowMenu.setFocusable(true);
         windowMenu.setResizable(false);
         windowMenu.setVisible(true);
-        windowMenu.setLocationRelativeTo(null);
         windowMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         windowMenu.pack();
     }

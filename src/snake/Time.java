@@ -85,8 +85,8 @@ public class Time {
     /*
         Time runs enable you chose and others hold ...
     */
-    public void actuate(int e, int l) {
-        for (int i = 0; i < l; i++) {
+    public void actuate(int e) {
+        for (int i = 0; i < timerMotion.length; i++) {
             if(i == e) 
                 startMotion(i);
             else 
@@ -100,7 +100,7 @@ public class Time {
         is stopped and restarted certain variables ...
     */
     private void createBonus() {
-        timerBonus = new Timer(100, new ActionListener() {
+        timerBonus = new Timer(90, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 timeBonus-=timerBonus.getDelay();             
                 instanceGame.getPanelGame().setBackground((instanceGame.getPanelGame().getBackground() == Color.white)?Color.black:Color.white);
@@ -150,6 +150,10 @@ public class Time {
     public void restoreSpeed() {
         for (int i = 0; i < timerMotion.length; i++) 
             timerMotion[i].setDelay(delay);
+    }
+    
+    public int getSpeed() {
+        return timerMotion[0].getDelay();
     }
     // If possible stop all movements
     public void stopTime() {
