@@ -38,10 +38,11 @@ public class GameScene extends JFrame {
         createPanels();
         createButtons();
         createWindow(); 
+        motion = new Time(this);
         play = new ClientPlay(this.matrix, this);
         keyEventDispatcher = new Events(this);
         keyboardFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        motion = new Time(this);
+        
         addKeyboardFocus();
     }   
     

@@ -22,7 +22,6 @@ public class Events implements KeyEventDispatcher {
     private GameScene instanceGame;
     
     public Events(GameScene instanceGame) {
-        super();
         this.instanceGame = instanceGame;
     }
     

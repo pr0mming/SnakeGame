@@ -24,7 +24,7 @@ public class Time {
     private ActionListener[] actions = {
         new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent a) {
+            public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Left");  
                 valueSpeed(instanceGame.getPlay().getScore());
                 instanceGame.getTime().startBonus();
@@ -40,7 +40,7 @@ public class Time {
         },
         new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent i) {
+            public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Up");
                 valueSpeed(instanceGame.getPlay().getScore());
                 instanceGame.getTime().startBonus();
@@ -48,7 +48,7 @@ public class Time {
         },
         new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent o) {
+            public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Down");
                 valueSpeed(instanceGame.getPlay().getScore());
                 instanceGame.getTime().startBonus();
@@ -58,7 +58,6 @@ public class Time {
     
     private Timer timerBonus;
     private Timer[] timerMotion;
-    private boolean statusBonus;
     private int timeBonus, goal;
     
     public Time(GameScene instanceGame) {
@@ -66,7 +65,6 @@ public class Time {
         delay = 500;
         goal = 100;
         timerMotion = new Timer[actions.length];
-        statusBonus = false;
         timeBonus = (900 * 5); //A second can be approximated to 900 milliseconds, multiplied by five, are 13500 milliseconds (5 seconds)
         createTimers();
         createBonus();
@@ -102,30 +100,27 @@ public class Time {
     private void createBonus() {
         timerBonus = new Timer(90, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                timeBonus-=timerBonus.getDelay();             
+                timeBonus -= 100;             
                 instanceGame.getPanelGame().setBackground((instanceGame.getPanelGame().getBackground() == Color.white)?Color.black:Color.white);
-                if (instanceGame.getPlay().getCurrentColor() != instanceGame.getPlay().getSpecialColor() || timeBonus <= 0) {
+                if ((!instanceGame.getPlay().getBonus()) || timeBonus <= 0) {
+                    instanceGame.getPlay().setBonus(false);
                     timeBonus = (900 * 5);
                     instanceGame.getPlay().deleteBonus();
                     instanceGame.getPanelGame().setBackground(Color.white);
-                    timerBonus.stop();
-                    statusBonus = false;
+                    timerBonus.stop();                   
                 }
             }
         });
     }
     // Activates the timer bonus
     public void startBonus() {
-        if (instanceGame.getPlay().getCurrentColor() == instanceGame.getPlay().getSpecialColor() && !statusBonus) {
-            statusBonus = true;
+        if (instanceGame.getPlay().getBonus() && !timerBonus.isRunning()) 
             timerBonus.start();      
-        }
     }
     // Defines the movement times, it is responsible for moving the snake "automatically"
     private void createTimers() {
         for (int i = 0; i < timerMotion.length; i++) 
             timerMotion[i] = new Timer(delay, actions[i]);
-        
     }
     // If possible start the timer indicated
     public void startMotion(int t) {
