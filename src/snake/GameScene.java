@@ -1,7 +1,13 @@
 
 package snake;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -18,11 +24,10 @@ import javax.swing.border.EmptyBorder;
  * GitHub: https://github.com/pr0mming
  */
 
-public class GameScene extends JFrame {
+public class GameScene extends JPanel {
 
-    private JFrame windowGame;
-    private JPanel panelGame;
-    private JPanel panelStatistics;
+    private App app;
+    private JPanel rootPanel, panelGame, panelStatistics;
     private JLabel [][] matrix;
     private JButton buttonRestart, buttonMenu;
     private JLabel score, len;
@@ -34,10 +39,11 @@ public class GameScene extends JFrame {
     private KeyboardFocusManager keyboardFocus;
     private Events keyEventDispatcher;
     
-    public GameScene() {               
+    public GameScene(App app) {
+        this.app = app;
         createPanels();
         createButtons();
-        createWindow(); 
+        createRootPanel(); 
         motion = new Time(this);
         play = new ClientPlay(this.matrix, this);
         keyEventDispatcher = new Events(this);
@@ -53,7 +59,7 @@ public class GameScene extends JFrame {
             ga.registerFont(font);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Oops ... an error has occurred in the importation of typography. It will try to pick another ;)", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
             return false;
         }
     }
@@ -93,10 +99,22 @@ public class GameScene extends JFrame {
         buttonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowGame.dispose();
-                new MenuScene();
+                app.runScene(new MenuScene(app));
             }
         });
+        
+        buttonMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                buttonMenu.setBackground(Color.white);
+                buttonMenu.setForeground(background);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                buttonMenu.setBackground(background);
+                buttonMenu.setForeground(Color.white);
+            }
+        });  
         
         buttonRestart = new JButton("RESTART");   
         buttonRestart.setHorizontalAlignment(SwingConstants.CENTER);
@@ -117,7 +135,7 @@ public class GameScene extends JFrame {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 buttonRestart.setBackground(Color.white);
-                buttonRestart.setForeground(Color.black);
+                buttonRestart.setForeground(background);
             }
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
@@ -132,46 +150,35 @@ public class GameScene extends JFrame {
     }       
     
     private void createPanels() {
-        x= 40; y= 60;
+        x = 40; y = 60;
         background = Color.black;
         panelGame = new JPanel(new GridLayout(x, y, 0, 0));
         
-        double[] screen = calculateScreen();
-        panelGame.setPreferredSize(new Dimension((int) screen[0], (int) screen[1]));
+        Dimension size = this.app.getPreferredSize();
+        panelGame.setPreferredSize(new Dimension((int) (size.width), (int) (size.height * 0.80)));
         panelGame.setBackground(Color.white);
         panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
-        panelGame.setVisible(true);        
+        
         panelStatistics = new JPanel(new GridLayout(2, 2, 10, 10));
-        panelStatistics.setPreferredSize(new Dimension(500, 120));
-        panelStatistics.setBorder(new EmptyBorder(10, 25, 25, 25));
-        panelStatistics.setAlignmentY(JComponent.BOTTOM_ALIGNMENT);
+        panelStatistics.setPreferredSize(new Dimension((int) (size.width), (int) (size.height * 0.14)));
+        panelStatistics.setBorder(new EmptyBorder(2, 25, 25, 25));
         panelStatistics.setBackground(background);
     }
     
-    private void createWindow() {
-        windowGame = new JFrame("Snake");                   
-        windowGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        windowGame.setPreferredSize(panelGame.getPreferredSize());
-        windowGame.getContentPane().add(panelGame);
-        windowGame.getContentPane().add(panelStatistics, BorderLayout.SOUTH);
-        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
-        windowGame.setIconImage(icon);
-        windowGame.setFocusable(true);
-        windowGame.setResizable(false);
-        windowGame.setVisible(true);
-        windowGame.pack();
-    }
-    
-    private double[] calculateScreen() {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screen.getWidth() * 0.5483;
-        double height = screen.getHeight() * 0.727;
+    private void createRootPanel() {
+        rootPanel = new JPanel();                   
+        rootPanel.setBackground(background);
+        rootPanel.setPreferredSize(this.app.getPreferredSize());
+        rootPanel.add(panelGame);
+        rootPanel.add(panelStatistics, BorderLayout.SOUTH);
+        rootPanel.setVisible(true);
         
-        return new double[]{width, height};
+        add(rootPanel);
+        setVisible(true);
     }
     
     public void destroyScene() {
-        windowGame.dispose();
+        this.app.runScene(new MenuScene(app));
     }
     
     public void updateScore(int p) {

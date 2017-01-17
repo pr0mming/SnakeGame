@@ -3,8 +3,6 @@ package snake;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -51,7 +49,7 @@ public class ClientPlay {
         this.lose = false;
         this.win = false;
         
-        generateSnake();
+        createSnake();
         createFood();
     }
     
@@ -140,7 +138,7 @@ public class ClientPlay {
         opposite direction (left) but would be a reverse case ...
     */
     
-    public void generateSnake() {  
+    public void createSnake() {  
         int x = 15; int y = 30;
               
         for (int i = 0, j = y; i <= snakeLen; i++, j++) {
@@ -185,8 +183,8 @@ public class ClientPlay {
     
     public void moveSnake(String key) {
         String[] coords = snake.get(0).split(",");
-            if(key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[1]) < matrix[0].length-1) {
-                if(matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1]) + 1].getBackground() != snakeColor) {     
+            if(key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[1]) < matrix.length - 1) {
+                if(!snake.contains(coords[0]+","+(Integer.valueOf(coords[1]) + 1))) {     
                     reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) + 1), 0);
                     eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) + 1);
                     direction = key;
@@ -195,7 +193,7 @@ public class ClientPlay {
                 }
             } else
                 if(key.equals("Left") && !direction.equals("Right") && Integer.valueOf(coords[1]) > 0) {
-                    if(matrix[Integer.valueOf(coords[0])][(Integer.valueOf(coords[1]) - 1)].getBackground() != snakeColor) {
+                    if(!snake.contains(coords[0]+","+(Integer.valueOf(coords[1]) - 1))) {
                         reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) - 1), 0);
                         eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) - 1);
                         direction = key;
@@ -204,7 +202,7 @@ public class ClientPlay {
                     }
                 } else
                     if(key.equals("Up") && !direction.equals("Down") && Integer.valueOf(coords[0]) > 0) {
-                        if(matrix[(Integer.valueOf(coords[0]) - 1)][Integer.valueOf(coords[1])].getBackground() != snakeColor) {
+                        if(!snake.contains((Integer.valueOf(coords[0]) - 1)+","+coords[1])) {
                             reposition((Integer.valueOf(coords[0]) - 1), Integer.valueOf(coords[1]), 0);
                             eat(Integer.valueOf(coords[0]) - 1, Integer.valueOf(coords[1]));
                             direction = key;
@@ -212,8 +210,8 @@ public class ClientPlay {
                             youLose();
                         }
                     } else
-                        if(key.equals("Down") && !direction.equals("Up") && Integer.valueOf(coords[0]) < matrix[0].length-1) {
-                            if(matrix[Integer.valueOf(coords[0]) + 1][Integer.valueOf(coords[1])].getBackground() != snakeColor) {
+                        if(key.equals("Down") && !direction.equals("Up") && Integer.valueOf(coords[0]) < matrix.length - 1) {
+                            if(!snake.contains((Integer.valueOf(coords[0]) + 1)+","+coords[1])) {
                                 reposition((Integer.valueOf(coords[0]) + 1), Integer.valueOf(coords[1]), 0);
                                 eat(Integer.valueOf(coords[0]) + 1, Integer.valueOf(coords[1]));
                                 direction = key;
@@ -282,7 +280,6 @@ public class ClientPlay {
                 this.instanceGame.addKeyboardFocus();
             } else {
                 this.instanceGame.destroyScene();
-                new MenuScene();
             }
         }
     }
@@ -308,7 +305,6 @@ public class ClientPlay {
                 this.instanceGame.addKeyboardFocus();
             } else {
                 this.instanceGame.destroyScene();
-                new MenuScene();
             }
         }
     }

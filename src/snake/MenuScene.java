@@ -7,17 +7,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -31,26 +27,28 @@ import javax.swing.border.EmptyBorder;
  * GitHub: https://github.com/pr0mming
  */
 
-public class MenuScene extends JFrame {
+public class MenuScene extends JPanel {
     
-    private JFrame windowMenu;
     private Font font;
+    private App app;
     
-    public MenuScene() {
+    public MenuScene(App app) {
+        this.app = app;
         createScene();
     }
     
     private void createScene() {
-        windowMenu = new JFrame("Snake");                    
-        double[] screen = calculateScreen();
-        windowMenu.setPreferredSize(new Dimension((int) screen[0], (int) screen[1]));
+        JPanel rootPanel = new JPanel();    
+        
+        rootPanel.setPreferredSize(this.app.getPreferredSize());
+        rootPanel.setBackground(Color.white);
         
         JPanel panelLogo = new JPanel();
         panelLogo.setBorder(new EmptyBorder(5, 5, 5, 5));
         panelLogo.setBackground(Color.white);
         
         JLabel snakeLogo = new JLabel();
-        snakeLogo.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/snakeLogo.png")).getImage().getScaledInstance((int) (screen[0] * 0.65), (int) (screen[1] * 0.65), Image.SCALE_DEFAULT)));
+        snakeLogo.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/snakeLogo.png")).getImage().getScaledInstance((int) (this.app.getPreferredSize().width * 0.63), (int) (this.app.getPreferredSize().height * 0.625), Image.SCALE_DEFAULT)));
         snakeLogo.setHorizontalAlignment(SwingConstants.CENTER);
         panelLogo.add(snakeLogo);
         
@@ -78,8 +76,19 @@ public class MenuScene extends JFrame {
         buttonStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowMenu.dispose();
-                new GameScene();
+                app.runScene(new GameScene(app));
+            }
+        });
+        buttonStart.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                buttonStart.setBackground(Color.black);
+                buttonStart.setForeground(Color.white);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                buttonStart.setBackground(Color.white);
+                buttonStart.setForeground(Color.black);
             }
         });
         panelButtons.add(buttonStart);
@@ -94,30 +103,36 @@ public class MenuScene extends JFrame {
         buttonSpecial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowMenu.dispose();
+                
+            }
+        });
+        buttonSpecial.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+        buttonSpecial.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                buttonSpecial.setBackground(Color.black);
+                buttonSpecial.setForeground(Color.white);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                buttonSpecial.setBackground(Color.white);
+                buttonSpecial.setForeground(Color.black);
             }
         });
         panelButtons.add(buttonSpecial);
         
-        windowMenu.getContentPane().add(panelLogo, BorderLayout.NORTH);
-        windowMenu.getContentPane().add(panelText);
-        windowMenu.getContentPane().add(panelButtons, BorderLayout.SOUTH);
+        rootPanel.add(panelLogo, BorderLayout.NORTH);
+        rootPanel.add(panelText);
+        rootPanel.add(panelButtons, BorderLayout.SOUTH);
         
-        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
-        windowMenu.setIconImage(icon);
-        windowMenu.setFocusable(true);
-        windowMenu.setResizable(false);
-        windowMenu.setVisible(true);
-        windowMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        windowMenu.pack();
-    }
-    
-    private double[] calculateScreen() {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screen.getWidth() * 0.5483;
-        double height = screen.getHeight() * 0.727;
-        
-        return new double[]{width, height};
+        setBackground(rootPanel.getBackground());
+        add(rootPanel);
+        setVisible(true);
     }
     
     private boolean typographyImport() {
@@ -127,19 +142,9 @@ public class MenuScene extends JFrame {
             ga.registerFont(font);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Oops ... an error has occurred in the importation of typography. It will try to pick another ;)", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
             return false;
         }
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MenuScene();
-            }
-        });
-    }
-    
     
 }
