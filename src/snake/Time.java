@@ -99,6 +99,7 @@ public class Time {
     */
     private void createBonus() {
         timerBonus = new Timer(90, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 timeBonus -= 100;             
                 instanceGame.getPanelGame().setBackground((instanceGame.getPanelGame().getBackground() == Color.white)?Color.black:Color.white);

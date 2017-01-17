@@ -24,7 +24,7 @@ public class ClientPlay {
 
     private GameScene instanceGame;
     private JLabel[][] matrix;
-    private int snakeLen, len, score, xFood, yFood;
+    private int snakeLen, len, score, xFood, yFood, foodInMemory;
     private ArrayList<String> snake;
     private ArrayList<String> foodInBonus;
     private Color snakeColor;
@@ -42,13 +42,14 @@ public class ClientPlay {
     
     private void startGame() {
         this.snakeLen = 4;
+        this.foodInMemory = 0;
+        this.score = 0;
         this.foodInBonus = new ArrayList<>();
         this.snake = new ArrayList<>();
         this.snakeColor = Color.white;
         this.bonus = false;
         this.lose = false;
         this.win = false;
-        this.score = 0;
         
         generateSnake();
         createFood();
@@ -63,12 +64,12 @@ public class ClientPlay {
     
     public void eat(int x, int y) {    
         if (xFood == x && yFood == y) {
-            incrementLen(2);
+            foodInMemory+=2;
             incrementScore(10);
             createFood();
         } else
             if (foodInBonus.contains(x+","+y)) {
-                incrementLen(1);
+                foodInMemory+=1;
                 incrementScore(10);
                 foodInBonus.remove(x+","+y);
                 
@@ -78,21 +79,6 @@ public class ClientPlay {
         len = snake.size();
         this.instanceGame.updateLenght(len);
         youWin();
-    }
-    
-    public void incrementLen(int n) {
-        while(n > 0) {
-            String[] coords = snake.get(snake.size() - 1).split(",");
-            
-            if (Integer.valueOf(coords[0]) - 1 > 0) {
-                snake.add(Integer.valueOf(coords[0]) - 1+","+coords[1]);
-            } else
-                if (Integer.valueOf(coords[0]) + 1 < matrix[0].length - 1) {
-                    snake.add(Integer.valueOf(coords[0]) + 1+","+coords[1]);
-                }
-            
-            n--;
-        }
     }
     
     //  Calculates and updates the score
@@ -177,7 +163,12 @@ public class ClientPlay {
         int[] array = {x, y};
         
         if(index >= snake.size()) {
-            matrix[x][y].setBackground(this.instanceGame.getBackgroundGame());            
+            if (foodInMemory > 0) {
+                matrix[x][y].setBackground(snakeColor);
+                snake.add(x+","+y);
+                foodInMemory--;
+            } else
+                matrix[x][y].setBackground(this.instanceGame.getBackgroundGame());            
         } else {
             String[] coords = snake.get(index).split(",");
             snake.set(index, x+","+y);
@@ -361,10 +352,6 @@ public class ClientPlay {
     
     public String getDirection() {
         return this.direction;
-    }
-    
-    public Color getCurrentColor() {
-        return this.matrix[xFood][yFood].getBackground();
     }
     
     public Color getSpecialColor() {
