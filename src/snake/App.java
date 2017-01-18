@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /*
@@ -42,10 +43,10 @@ public class App extends JFrame{
         setIconImage(icon);
         runScene(new MenuScene(this));
         
-        getContentPane().setBackground(Color.white);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
         setVisible(true);
+        setLocation((int) screen[0] / 2, (int) screen[1] / 4);
+        setResizable(false);
         
         pack();
     }
@@ -53,6 +54,7 @@ public class App extends JFrame{
     public void runScene(JPanel scene) {
         destroyScene();
         
+        rootPanel.setBackground(scene.getBackground());
         rootPanel.add(scene);
         rootPane.validate();
         rootPanel.repaint();
@@ -73,6 +75,11 @@ public class App extends JFrame{
     }
     
     public static void main(String[] args) {
-        new App();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new App();
+            }
+});
     }
 }

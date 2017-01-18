@@ -5,8 +5,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
+import java.awt.GridLayout;                      
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,7 +156,7 @@ public class GameScene extends JPanel {
         panelGame = new JPanel(new GridLayout(x, y, 0, 0));
         
         Dimension size = this.app.getPreferredSize();
-        panelGame.setPreferredSize(new Dimension((int) (size.width), (int) (size.height * 0.80)));
+        panelGame.setPreferredSize(new Dimension((int) (size.width *0.99), (int) (size.height * 0.79)));
         panelGame.setBackground(Color.white);
         panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
         
@@ -166,14 +167,15 @@ public class GameScene extends JPanel {
     }
     
     private void createRootPanel() {
-        rootPanel = new JPanel();                   
-        rootPanel.setBackground(background);
+        rootPanel = new JPanel();             
         rootPanel.setPreferredSize(this.app.getPreferredSize());
         rootPanel.add(panelGame);
         rootPanel.add(panelStatistics, BorderLayout.SOUTH);
+        rootPanel.setBackground(background);
         rootPanel.setVisible(true);
         
         add(rootPanel);
+        setBackground(background);
         setVisible(true);
     }
     

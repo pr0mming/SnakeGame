@@ -2,8 +2,10 @@
 package snake;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -26,7 +28,6 @@ public class ClientPlay {
     private ArrayList<String> snake;
     private ArrayList<String> foodInBonus;
     private Color snakeColor;
-    private Color[] foodColor = {Color.yellow, Color.blue, Color.red};
     private String direction;
     private boolean bonus, lose, win;
     private Random rnd;
@@ -51,6 +52,7 @@ public class ClientPlay {
         
         createSnake();
         createFood();
+        this.instanceGame.getTime().startMotion(0);
     }
     
     /*    
@@ -62,11 +64,13 @@ public class ClientPlay {
     
     public void eat(int x, int y) {    
         if (xFood == x && yFood == y) {
+            this.matrix[x][y].setIcon(null);
             foodInMemory+=2;
             incrementScore(10);
             createFood();
         } else
             if (foodInBonus.contains(x+","+y)) {
+                this.matrix[x][y].setIcon(null);
                 foodInMemory+=1;
                 incrementScore(10);
                 foodInBonus.remove(x+","+y);
@@ -99,9 +103,9 @@ public class ClientPlay {
             int x = (rnd.nextInt(matrix.length - 0) + 0);
             int y = (rnd.nextInt(matrix[0].length - 0) + 0);
             
-            if (x != xFood && y != yFood) {
+            if (x != xFood && y != yFood && !foodInBonus.contains(x+","+y) && !snake.contains(x+","+y)) {
                 foodInBonus.add(x+","+y);
-                matrix[x][y].setBackground(foodColor[2]);
+                matrix[x][y].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)));
                 lim--;
             }
         }
@@ -118,16 +122,18 @@ public class ClientPlay {
         int xRnd = rnd.nextInt(matrix.length - 0) + 0;
         int yRnd = rnd.nextInt(matrix[0].length - 0) + 0;
         
-        if(matrix[xRnd][yRnd].getBackground() == snakeColor) {
+        if(snake.contains(xRnd+","+yRnd) || foodInBonus.contains(xRnd+","+yRnd) || this.matrix[xRnd][yRnd].getIcon() != null) {
             createFood();
         } else {
             xFood = xRnd;
             yFood = yRnd;
             
-            Color c = foodColor[rnd.nextInt(foodColor.length - 0) + 0];
-            matrix[xFood][yFood].setBackground(c);
-            if (c == foodColor[2]) 
-                createBonus(rnd.nextInt(3 - 1) + 1);          
+            int b = (rnd.nextInt(10 - 1) + 1) % 3;
+            
+            if (b % 3 == 0 && !bonus) {
+                createBonus(rnd.nextInt(4 - 2) + 2);
+            } else
+                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)));
         }
     }
     
@@ -183,45 +189,48 @@ public class ClientPlay {
     
     public void moveSnake(String key) {
         String[] coords = snake.get(0).split(",");
-            if(key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[1]) < matrix.length - 1) {
-                if(!snake.contains(coords[0]+","+(Integer.valueOf(coords[1]) + 1))) {     
-                    reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) + 1), 0);
-                    eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) + 1);
+        
+        if (key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[0]) < matrix.length - 1) {
+            if (!snake.contains(coords[0] + "," + (Integer.valueOf(coords[1]) + 1))) {
+                reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) + 1), 0);
+                eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) + 1);
+                direction = key;
+            } else {
+                youLose();
+            }
+        } else {
+            if (key.equals("Left") && !direction.equals("Right") && Integer.valueOf(coords[1]) > 0) {
+                if (!snake.contains(coords[0] + "," + (Integer.valueOf(coords[1]) - 1))) {
+                    reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) - 1), 0);
+                    eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) - 1);
                     direction = key;
                 } else {
                     youLose();
                 }
-            } else
-                if(key.equals("Left") && !direction.equals("Right") && Integer.valueOf(coords[1]) > 0) {
-                    if(!snake.contains(coords[0]+","+(Integer.valueOf(coords[1]) - 1))) {
-                        reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) - 1), 0);
-                        eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) - 1);
+            } else {
+                if (key.equals("Up") && !direction.equals("Down") && Integer.valueOf(coords[0]) > 0) {
+                    if (!snake.contains((Integer.valueOf(coords[0]) - 1) + "," + coords[1])) {
+                        reposition((Integer.valueOf(coords[0]) - 1), Integer.valueOf(coords[1]), 0);
+                        eat(Integer.valueOf(coords[0]) - 1, Integer.valueOf(coords[1]));
                         direction = key;
                     } else {
                         youLose();
                     }
-                } else
-                    if(key.equals("Up") && !direction.equals("Down") && Integer.valueOf(coords[0]) > 0) {
-                        if(!snake.contains((Integer.valueOf(coords[0]) - 1)+","+coords[1])) {
-                            reposition((Integer.valueOf(coords[0]) - 1), Integer.valueOf(coords[1]), 0);
-                            eat(Integer.valueOf(coords[0]) - 1, Integer.valueOf(coords[1]));
+                } else {
+                    if (key.equals("Down") && !direction.equals("Up") && Integer.valueOf(coords[0]) < matrix.length - 1) {
+                        if (!snake.contains((Integer.valueOf(coords[0]) + 1) + "," + coords[1])) {
+                            reposition((Integer.valueOf(coords[0]) + 1), Integer.valueOf(coords[1]), 0);
+                            eat(Integer.valueOf(coords[0]) + 1, Integer.valueOf(coords[1]));
                             direction = key;
                         } else {
                             youLose();
                         }
-                    } else
-                        if(key.equals("Down") && !direction.equals("Up") && Integer.valueOf(coords[0]) < matrix.length - 1) {
-                            if(!snake.contains((Integer.valueOf(coords[0]) + 1)+","+coords[1])) {
-                                reposition((Integer.valueOf(coords[0]) + 1), Integer.valueOf(coords[1]), 0);
-                                eat(Integer.valueOf(coords[0]) + 1, Integer.valueOf(coords[1]));
-                                direction = key;
-                            } else {
-                                youLose();
-                            }
-                        } else {
-                            youLose();
-                        }
-        
+                    } else {
+                        youLose();
+                    }
+                }
+            }
+        }
     }
     
     /*        
@@ -231,14 +240,14 @@ public class ClientPlay {
     */
     
     public void deleteArray(ArrayList<String> x) {
-        int n = x.size() - 1;
         
-        while(n >= 0) {
-            String[] coords = x.get(n).split(",");
-            matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setBackground(this.instanceGame.getBackgroundGame());       
-            x.remove(x.size() - 1);
-            n--;
+        for(String element : x) {
+            String[] coords = element.split(",");
+            matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setBackground(this.instanceGame.getBackgroundGame());     
+            matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setIcon(null);
         }
+        
+        x.removeAll(x);
     }
     
     /*
@@ -252,6 +261,7 @@ public class ClientPlay {
         deleteArray(snake);
         deleteArray(foodInBonus);
         matrix[xFood][yFood].setBackground(this.instanceGame.getBackgroundGame());    
+        matrix[xFood][yFood].setIcon(null);
         
         startGame();       
         this.instanceGame.updateScore(score);
@@ -317,12 +327,13 @@ public class ClientPlay {
     public void deleteBonus() {
         deleteArray(foodInBonus);
         matrix[xFood][yFood].setBackground(this.instanceGame.getBackgroundGame());
+        matrix[xFood][yFood].setIcon(null);
         createFood();
     }
     
     // -- Down here are just getters --
     
-    public Color getsnakeColor() {
+    public Color getSnakeColor() {
         return this.snakeColor;
     }
     
@@ -348,10 +359,6 @@ public class ClientPlay {
     
     public String getDirection() {
         return this.direction;
-    }
-    
-    public Color getSpecialColor() {
-        return this.foodColor[2];
     }
     
     public int getScore() {

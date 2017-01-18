@@ -68,7 +68,6 @@ public class Time {
         timeBonus = (900 * 5); //A second can be approximated to 900 milliseconds, multiplied by five, are 13500 milliseconds (5 seconds)
         createTimers();
         createBonus();
-        startMotion(0);
     }
     /*
         If you get to the 100 points the speed of the snake increases 
@@ -98,12 +97,12 @@ public class Time {
         is stopped and restarted certain variables ...
     */
     private void createBonus() {
-        timerBonus = new Timer(90, new ActionListener() {
+        timerBonus = new Timer(70, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timeBonus -= 100;             
+                timeBonus -= timerBonus.getDelay();             
                 instanceGame.getPanelGame().setBackground((instanceGame.getPanelGame().getBackground() == Color.white)?Color.black:Color.white);
-                if ((!instanceGame.getPlay().getBonus()) || timeBonus <= 0) {
+                if (!(instanceGame.getPlay().getBonus()) || timeBonus <= 0) {
                     instanceGame.getPlay().setBonus(false);
                     timeBonus = (900 * 5);
                     instanceGame.getPlay().deleteBonus();
