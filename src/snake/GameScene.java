@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;                      
 import java.awt.KeyboardFocusManager;
@@ -27,47 +26,46 @@ import javax.swing.border.EmptyBorder;
 
 public class GameScene extends JPanel {
 
-    private App app;
-    private JPanel rootPanel, panelGame, panelStatistics;
+    private JPanel panelGame;
     private JLabel [][] matrix;
-    private JButton buttonRestart, buttonMenu;
     private JLabel score, len;
-    private int x, y;
     private ClientPlay play;
     private Color background;
-    private Time motion;
+    private Scheduler motion;
     private Font font;
     private KeyboardFocusManager keyboardFocus;
-    private Events keyEventDispatcher;
+    private Control keyEventDispatcher;
     
-    public GameScene(App app) {
-        this.app = app;
-        createPanels();
-        createButtons();
-        createRootPanel(); 
-        motion = new Time(this);
-        play = new ClientPlay(this.matrix, this);
-        keyEventDispatcher = new Events(this);
+    public GameScene() {
+        createScene();
+        
+        motion = new Scheduler(this);
+        play = new ClientPlay(this);
+        keyEventDispatcher = new Control(this);
         keyboardFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         
         addKeyboardFocus();
-    }   
+    }         
     
-    private boolean typographyImport() {
-        try {
-            font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
-            GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ga.registerFont(font);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
-            return false;
-        }
-    }
-
-    private void createButtons() {
+    private void createScene() {
+        int x = 40, y = 60;
+        
+        background = Color.black;
+        panelGame = new JPanel(new GridLayout(x, y, 0, 0));
+        
+        Dimension size = App.getInstance().getPreferredSize();
+        panelGame.setPreferredSize(new Dimension((int) (size.width *0.99), (int) (size.height * 0.79)));
+        panelGame.setBackground(Color.white);
+        panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
+        
+        JPanel panelStatistics = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelStatistics.setPreferredSize(new Dimension((int) (size.width), (int) (size.height * 0.14)));
+        panelStatistics.setBorder(new EmptyBorder(2, 25, 25, 25));
+        panelStatistics.setBackground(background);
+        
+        //Buttons
         matrix = new JLabel[x][y];
-        boolean importFont = typographyImport();
+        boolean importFont = importFont();
         
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix[i].length; j++) {                            
@@ -89,7 +87,7 @@ public class GameScene extends JPanel {
         len.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
         len.setForeground(Color.white);
         
-        buttonMenu = new JButton("MENU");  
+        JButton buttonMenu = new JButton("MENU");  
         buttonMenu.setHorizontalAlignment(SwingConstants.CENTER);
         buttonMenu.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
         buttonMenu.setPreferredSize(new Dimension(120, 40));
@@ -100,7 +98,7 @@ public class GameScene extends JPanel {
         buttonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.runScene(new MenuScene(app));
+                changeScene(new MenuScene());
             }
         });
         
@@ -117,7 +115,7 @@ public class GameScene extends JPanel {
             }
         });  
         
-        buttonRestart = new JButton("RESTART");   
+        JButton buttonRestart = new JButton("RESTART");   
         buttonRestart.setHorizontalAlignment(SwingConstants.CENTER);
         buttonRestart.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
         buttonRestart.setPreferredSize(new Dimension(120, 40));
@@ -143,32 +141,15 @@ public class GameScene extends JPanel {
                 buttonRestart.setBackground(background);
                 buttonRestart.setForeground(Color.white);
             }
-        });       
+        });      
+        
         panelStatistics.add(score);
         panelStatistics.add(len);
         panelStatistics.add(buttonMenu);
         panelStatistics.add(buttonRestart);
-    }       
-    
-    private void createPanels() {
-        x = 40; y = 60;
-        background = Color.black;
-        panelGame = new JPanel(new GridLayout(x, y, 0, 0));
         
-        Dimension size = this.app.getPreferredSize();
-        panelGame.setPreferredSize(new Dimension((int) (size.width *0.99), (int) (size.height * 0.79)));
-        panelGame.setBackground(Color.white);
-        panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
-        
-        panelStatistics = new JPanel(new GridLayout(2, 2, 10, 10));
-        panelStatistics.setPreferredSize(new Dimension((int) (size.width), (int) (size.height * 0.14)));
-        panelStatistics.setBorder(new EmptyBorder(2, 25, 25, 25));
-        panelStatistics.setBackground(background);
-    }
-    
-    private void createRootPanel() {
-        rootPanel = new JPanel();             
-        rootPanel.setPreferredSize(this.app.getPreferredSize());
+        JPanel rootPanel = new JPanel();             
+        rootPanel.setPreferredSize(App.getInstance().getPreferredSize());
         rootPanel.add(panelGame);
         rootPanel.add(panelStatistics, BorderLayout.SOUTH);
         rootPanel.setBackground(background);
@@ -179,9 +160,35 @@ public class GameScene extends JPanel {
         setVisible(true);
     }
     
-    public void destroyScene() {
-        this.app.runScene(new MenuScene(app));
+    /*
+        Here I am not completely convinced if the memory is successfully released with this method. 
+        Practically if there are active event listeners or timers, the GC will not choose them, 
+        I have to resort to manually deactivating them and equaling them to null. Otherwise 
+        this scene would still exist in memory and you could still "play blindly"
+    */
+    public void changeScene(JPanel scene) {
+        motion.stopAllTimers();
+        removeKeyFocus();
+        
+        motion = null;
+        play = null;
+        keyboardFocus = null;
+        keyEventDispatcher = null;
+        
+        App.getInstance().runScene(scene);
     }
+    
+    private boolean importFont() {
+        try {
+            font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
+            GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ga.registerFont(font);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
+            return false;
+        }
+    } 
     
     public void updateScore(int p) {
         score.setText("SCORE: "+p);
@@ -199,12 +206,16 @@ public class GameScene extends JPanel {
         this.keyboardFocus.removeKeyEventDispatcher(keyEventDispatcher);
     }
     
-    public Time getTime() {
-        return this.motion;
+    public void changeColorPanel() {
+        panelGame.setBackground((panelGame.getBackground() == Color.white)?Color.black:Color.white);
     }
     
-    public JPanel getPanelGame() {
-        return this.panelGame;
+    public void restoreColorPanel() {
+        panelGame.setBackground(Color.white);
+    }
+    
+    public Scheduler getScheduler() {
+        return this.motion;
     }
     
     public ClientPlay getPlay() {
@@ -215,4 +226,7 @@ public class GameScene extends JPanel {
         return this.background;
     }
     
+    public JLabel[][] getMatrix() {
+        return matrix;
+    }
 }

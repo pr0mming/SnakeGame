@@ -16,20 +16,28 @@ import javax.swing.border.EmptyBorder;
 
     This main class manages the scenes, and it works with an instance, which is passed as parameter 
     in each constructor of the scenes and from that instance it is called to the method 
-    that runs the scenes (instanciar objects of certain classes)
+    that runs the scenes (instance objects of certain classes)
 */
 
 public class App extends JFrame{
     
     private JPanel rootPanel;
+    private static App app;
     
-    public App() {
+    private App() {
         super("Snake");
         createApp();
     }
     
-    private void createApp() {
+    public static App getInstance() {
+        if (app == null) {
+            app = new App();
+        }
         
+        return app;
+    }
+    
+    private void createApp() {
         double[] screen = calculateScreen();
         setPreferredSize(new Dimension((int) screen[0], (int) screen[1]));
         
@@ -37,11 +45,12 @@ public class App extends JFrame{
         rootPanel.setBackground(Color.white);
         rootPanel.setPreferredSize(getPreferredSize());
         rootPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        rootPanel.setFocusable(true);
+        
         getContentPane().add(rootPanel);
                 
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png"));
         setIconImage(icon);
-        runScene(new MenuScene(this));
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
         setVisible(true);
@@ -56,14 +65,12 @@ public class App extends JFrame{
         
         rootPanel.setBackground(scene.getBackground());
         rootPanel.add(scene);
-        rootPane.validate();
+        rootPane.revalidate();
         rootPanel.repaint();
     }
      
     private void destroyScene() {
         rootPanel.removeAll();
-        rootPanel.revalidate();
-        rootPanel.repaint();
     }
     
     private double[] calculateScreen() {
@@ -78,8 +85,8 @@ public class App extends JFrame{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new App();
+                getInstance().runScene(new MenuScene());
             }
-});
+        });
     }
 }

@@ -32,8 +32,8 @@ public class ClientPlay {
     private boolean bonus, lose, win;
     private Random rnd;
     
-    public ClientPlay(JLabel[][] matrix, GameScene instanceGame) {
-        this.matrix = matrix;
+    public ClientPlay(GameScene instanceGame) {
+        this.matrix = instanceGame.getMatrix();
         this.rnd = new Random();
         this.instanceGame = instanceGame;
         startGame();
@@ -52,7 +52,7 @@ public class ClientPlay {
         
         createSnake();
         createFood();
-        this.instanceGame.getTime().startMotion(0);
+        this.instanceGame.getScheduler().startMotion(0);
     }
     
     /*    
@@ -190,7 +190,7 @@ public class ClientPlay {
     public void moveSnake(String key) {
         String[] coords = snake.get(0).split(",");
         
-        if (key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[0]) < matrix.length - 1) {
+        if (key.equals("Right") && !direction.equals("Left") && Integer.valueOf(coords[1]) < matrix[0].length - 1) {
             if (!snake.contains(coords[0] + "," + (Integer.valueOf(coords[1]) + 1))) {
                 reposition(Integer.valueOf(coords[0]), (Integer.valueOf(coords[1]) + 1), 0);
                 eat(Integer.valueOf(coords[0]), Integer.valueOf(coords[1]) + 1);
@@ -256,8 +256,8 @@ public class ClientPlay {
     */
     
     public void restartGame() {                  
-        this.instanceGame.getTime().stopTime();
-        this.instanceGame.getTime().restoreSpeed();
+        this.instanceGame.getScheduler().stopAllTimers();
+        this.instanceGame.getScheduler().restoreSpeed();
         deleteArray(snake);
         deleteArray(foodInBonus);
         matrix[xFood][yFood].setBackground(this.instanceGame.getBackgroundGame());    
@@ -275,9 +275,9 @@ public class ClientPlay {
     public void youWin() {
         if (!win && len >= 100) {
             
-            this.win = true;
-            this.instanceGame.getTime().stopTime();
-            this.instanceGame.removeKeyFocus();
+            win = true;
+            instanceGame.getScheduler().stopAllMotions();
+            instanceGame.removeKeyFocus();
             
             Object[] options = { "Try again", "Back to menu" };
 
@@ -287,9 +287,9 @@ public class ClientPlay {
             
             if (r == JOptionPane.YES_OPTION){
                 restartGame();
-                this.instanceGame.addKeyboardFocus();
+                instanceGame.addKeyboardFocus();
             } else {
-                this.instanceGame.destroyScene();
+                instanceGame.changeScene(new MenuScene());
             }
         }
     }
@@ -300,9 +300,9 @@ public class ClientPlay {
             /*
                 The boolean is an aid to avoid the appearance of multiple JoptionPane in case of playing "wildly"
             */
-            this.lose = true;
-            this.instanceGame.getTime().stopTime();
-            this.instanceGame.removeKeyFocus();
+            lose = true;
+            instanceGame.getScheduler().stopAllMotions();
+            instanceGame.removeKeyFocus();
 
             Object[] options = { "Try again", "Back to menu" };
 
@@ -312,9 +312,9 @@ public class ClientPlay {
             
             if (r == JOptionPane.YES_OPTION){
                 restartGame();
-                this.instanceGame.addKeyboardFocus();
+                instanceGame.addKeyboardFocus();
             } else {
-                this.instanceGame.destroyScene();
+                instanceGame.changeScene(new MenuScene());
             }
         }
     }

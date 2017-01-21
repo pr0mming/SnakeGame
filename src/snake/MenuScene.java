@@ -30,17 +30,15 @@ import javax.swing.border.EmptyBorder;
 public class MenuScene extends JPanel {
     
     private Font font;
-    private App app;
     
-    public MenuScene(App app) {
-        this.app = app;
+    public MenuScene() {
         createScene();
     }
     
     private void createScene() {
         JPanel rootPanel = new JPanel();    
         
-        rootPanel.setPreferredSize(this.app.getPreferredSize());
+        rootPanel.setPreferredSize(App.getInstance().getPreferredSize());
         rootPanel.setBackground(Color.white);
         
         JPanel panelLogo = new JPanel();
@@ -48,7 +46,7 @@ public class MenuScene extends JPanel {
         panelLogo.setBackground(Color.white);
         
         JLabel snakeLogo = new JLabel();
-        snakeLogo.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/snakeLogo.png")).getImage().getScaledInstance((int) (this.app.getPreferredSize().width * 0.63), (int) (this.app.getPreferredSize().height * 0.625), Image.SCALE_DEFAULT)));
+        snakeLogo.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/snakeLogo.png")).getImage().getScaledInstance((int) (App.getInstance().getPreferredSize().width * 0.63), (int) (App.getInstance().getPreferredSize().height * 0.625), Image.SCALE_DEFAULT)));
         snakeLogo.setHorizontalAlignment(SwingConstants.CENTER);
         panelLogo.add(snakeLogo);
         
@@ -57,7 +55,7 @@ public class MenuScene extends JPanel {
         panelText.setBackground(Color.white);
         
         JLabel text = new JLabel("<html><body><center>It may be quite simple but it takes some time.<br> This application is intended to amuse and demonstrate <br> the use of Java Swing & AWT <br>recreating games as simple as Snake</center></body></html>");
-        boolean importFont = typographyImport();
+        boolean importFont = importFont();
         text.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 23));
         text.setHorizontalAlignment(SwingConstants.CENTER);
         text.setBackground(Color.white);
@@ -73,12 +71,16 @@ public class MenuScene extends JPanel {
         buttonStart.setBackground(Color.white);
         buttonStart.setBorder(new BordeRadio(10));
         buttonStart.setFocusable(true);
-        buttonStart.addActionListener(new ActionListener() {
+        ActionListener action = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.runScene(new GameScene(app));
+                App.getInstance().runScene(new GameScene());  
+                System.out.println("Free memory (bytes): " + 
+                Runtime.getRuntime().freeMemory());
             }
-        });
+        };
+        
+        buttonStart.addActionListener(action);
         buttonStart.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -106,12 +108,7 @@ public class MenuScene extends JPanel {
                 
             }
         });
-        buttonSpecial.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-            }
-        });
+        
         buttonSpecial.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -135,7 +132,7 @@ public class MenuScene extends JPanel {
         setVisible(true);
     }
     
-    private boolean typographyImport() {
+    private boolean importFont() {
         try {
             font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/SugarpunchDEMO.otf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
