@@ -10,7 +10,11 @@ import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -48,6 +52,7 @@ public class GameScene extends JPanel {
     }         
     
     private void createScene() {
+        //Panels
         int x = 40, y = 60;
         
         background = Color.black;
@@ -148,6 +153,7 @@ public class GameScene extends JPanel {
         panelStatistics.add(buttonMenu);
         panelStatistics.add(buttonRestart);
         
+        //Root
         JPanel rootPanel = new JPanel();             
         rootPanel.setPreferredSize(App.getInstance().getPreferredSize());
         rootPanel.add(panelGame);
@@ -167,8 +173,8 @@ public class GameScene extends JPanel {
         this scene would still exist in memory and you could still "play blindly"
     */
     public void changeScene(JPanel scene) {
-        motion.stopAllTimers();
         removeKeyFocus();
+        motion.stopAllTimers();
         
         motion = null;
         play = null;
@@ -207,7 +213,7 @@ public class GameScene extends JPanel {
     }
     
     public void changeColorPanel() {
-        panelGame.setBackground((panelGame.getBackground() == Color.white)?Color.black:Color.white);
+        panelGame.setBackground((panelGame.getBackground() == Color.white) ? Color.black : Color.white);
     }
     
     public void restoreColorPanel() {

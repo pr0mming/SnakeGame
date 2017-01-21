@@ -52,7 +52,7 @@ public class ClientPlay {
         
         createSnake();
         createFood();
-        this.instanceGame.getScheduler().startMotion(0);
+        //this.instanceGame.getScheduler().startMotion(0);
     }
     
     /*    
@@ -153,7 +153,7 @@ public class ClientPlay {
         }      
     
         direction = "Left";
-        len = snake.size()/2;
+        len = snake.size();
         instanceGame.updateLenght(len);
     } 
     
@@ -256,7 +256,6 @@ public class ClientPlay {
     */
     
     public void restartGame() {                  
-        this.instanceGame.getScheduler().stopAllTimers();
         this.instanceGame.getScheduler().restoreSpeed();
         deleteArray(snake);
         deleteArray(foodInBonus);
@@ -276,7 +275,7 @@ public class ClientPlay {
         if (!win && len >= 100) {
             
             win = true;
-            instanceGame.getScheduler().stopAllMotions();
+            instanceGame.getScheduler().stopAllTimers();
             instanceGame.removeKeyFocus();
             
             Object[] options = { "Try again", "Back to menu" };
@@ -301,8 +300,9 @@ public class ClientPlay {
                 The boolean is an aid to avoid the appearance of multiple JoptionPane in case of playing "wildly"
             */
             lose = true;
-            instanceGame.getScheduler().stopAllMotions();
+            instanceGame.getScheduler().stopAllTimers();
             instanceGame.removeKeyFocus();
+            instanceGame.restoreColorPanel();
 
             Object[] options = { "Try again", "Back to menu" };
 
@@ -326,7 +326,6 @@ public class ClientPlay {
     
     public void deleteBonus() {
         deleteArray(foodInBonus);
-        matrix[xFood][yFood].setBackground(this.instanceGame.getBackgroundGame());
         matrix[xFood][yFood].setIcon(null);
         createFood();
     }

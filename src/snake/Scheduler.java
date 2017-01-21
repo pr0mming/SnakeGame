@@ -25,7 +25,7 @@ public class Scheduler {
             public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Left");  
                 valueSpeed(instanceGame.getPlay().getScore());
-                instanceGame.getScheduler().startBonus();
+                startBonus();
             }
         },
         new ActionListener() {
@@ -33,7 +33,7 @@ public class Scheduler {
             public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Right");
                 valueSpeed(instanceGame.getPlay().getScore());
-                instanceGame.getScheduler().startBonus();
+                startBonus();
             }
         },
         new ActionListener() {
@@ -41,7 +41,7 @@ public class Scheduler {
             public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Up");
                 valueSpeed(instanceGame.getPlay().getScore());
-                instanceGame.getScheduler().startBonus();
+                startBonus();
             }
         },
         new ActionListener() {
@@ -49,7 +49,7 @@ public class Scheduler {
             public void actionPerformed(ActionEvent e) {
                 instanceGame.getPlay().moveSnake("Down");
                 valueSpeed(instanceGame.getPlay().getScore());
-                instanceGame.getScheduler().startBonus();
+                startBonus();
             }
         }
     };
