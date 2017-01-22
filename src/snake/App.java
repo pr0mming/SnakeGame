@@ -8,7 +8,6 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 
 /*
     The scenes I represent as JPanels, just create a class with all the elements 
@@ -44,7 +43,6 @@ public class App extends JFrame{
         rootPanel = new JPanel();
         rootPanel.setBackground(Color.white);
         rootPanel.setPreferredSize(getPreferredSize());
-        rootPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         rootPanel.setFocusable(true);
         
         getContentPane().add(rootPanel);

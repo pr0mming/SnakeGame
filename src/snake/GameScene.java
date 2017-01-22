@@ -59,7 +59,7 @@ public class GameScene extends JPanel {
         panelGame = new JPanel(new GridLayout(x, y, 0, 0));
         
         Dimension size = App.getInstance().getPreferredSize();
-        panelGame.setPreferredSize(new Dimension((int) (size.width *0.99), (int) (size.height * 0.79)));
+        panelGame.setPreferredSize(new Dimension((int) (size.width * 0.99), (int) (size.height * 0.79)));
         panelGame.setBackground(Color.white);
         panelGame.setBorder(BorderFactory.createLineBorder(background, 5));
         

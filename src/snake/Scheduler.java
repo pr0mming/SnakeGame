@@ -64,7 +64,8 @@ public class Scheduler {
         goal = 100;
         timerMotion = new Timer[actions.length];
         timeBonus = (900 * 5); //A second can be approximated to 900 milliseconds, multiplied by five, are 13500 milliseconds (5 seconds)
-        createTimers();
+        
+        createMotion();
         createBonus();
     }
     
@@ -128,7 +129,7 @@ public class Scheduler {
     }
     
     // Defines the movement times, it is responsible for moving the snake "automatically"
-    private void createTimers() {
+    private void createMotion() {
         for (int i = 0; i < timerMotion.length; i++) 
             timerMotion[i] = new Timer(delay, actions[i]);
     }

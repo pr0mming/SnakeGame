@@ -3,11 +3,12 @@ package snake;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,14 +20,12 @@ import javax.swing.JOptionPane;
  * 
  * GitHub: https://github.com/pr0mming
  */
-
 public class ClientPlay {
 
     private GameScene instanceGame;
     private JLabel[][] matrix;
     private int snakeLen, len, score, xFood, yFood, foodInMemory;
-    private ArrayList<String> snake;
-    private ArrayList<String> foodInBonus;
+    private ArrayList<String> snake, foodInBonus;
     private Color snakeColor;
     private String direction;
     private boolean bonus, lose, win;
@@ -52,7 +51,7 @@ public class ClientPlay {
         
         createSnake();
         createFood();
-        //this.instanceGame.getScheduler().startMotion(0);
+        
     }
     
     /*    
@@ -61,33 +60,31 @@ public class ClientPlay {
         If the special color (bonus) the effect is activated and the snake will double,
         also generate new food.
     */
-    
     public void eat(int x, int y) {    
         if (xFood == x && yFood == y) {
-            this.matrix[x][y].setIcon(null);
+            matrix[x][y].setIcon(null);
             foodInMemory+=2;
             incrementScore(10);
             createFood();
         } else
             if (foodInBonus.contains(x+","+y)) {
-                this.matrix[x][y].setIcon(null);
+                matrix[x][y].setIcon(null);
                 foodInMemory+=1;
                 incrementScore(10);
                 foodInBonus.remove(x+","+y);
                 
-                if (foodInBonus.size() == 0) bonus = false;
+                if (foodInBonus.isEmpty()) bonus = false;
             }
         
         len = snake.size();
-        this.instanceGame.updateLenght(len);
+        instanceGame.updateLenght(len);
         youWin();
     }
     
     //  Calculates and updates the score
-    
     public void incrementScore(int p) {
         score+=p;
-        this.instanceGame.updateScore(score);
+        instanceGame.updateScore(score);
     } 
     
     /*
@@ -95,7 +92,6 @@ public class ClientPlay {
         on special color is generated, the coordinates are stored in an array 
         to know exactly where they are and want to delete them at once ...
     */
-    
     public void createBonus(int lim) {
         bonus = true;
         
@@ -117,18 +113,17 @@ public class ClientPlay {
         the coordinates of the block in two variables is stored, if the special color 
         is chosen (bonus) will be generated n amount of new food, all randomly ...
     */
-    
     public void createFood() {
         int xRnd = rnd.nextInt(matrix.length - 0) + 0;
         int yRnd = rnd.nextInt(matrix[0].length - 0) + 0;
         
-        if(snake.contains(xRnd+","+yRnd) || foodInBonus.contains(xRnd+","+yRnd) || this.matrix[xRnd][yRnd].getIcon() != null) {
+        if(snake.contains(xRnd+","+yRnd) || foodInBonus.contains(xRnd+","+yRnd)) {
             createFood();
         } else {
             xFood = xRnd;
             yFood = yRnd;
             
-            int b = (rnd.nextInt(10 - 1) + 1) % 3;
+            int b = (rnd.nextInt(10 - 1) + 1);
             
             if (b % 3 == 0 && !bonus) {
                 createBonus(rnd.nextInt(4 - 2) + 2);
@@ -143,10 +138,11 @@ public class ClientPlay {
         if the condition is true then I'll move right snake and put the 
         opposite direction (left) but would be a reverse case ...
     */
-    
     public void createSnake() {  
-        int x = 15; int y = 30;
+        int x = (matrix.length / 2); int y = (matrix[0].length / 2);
               
+        if (snakeLen > (matrix[0].length - 1) / 2) snakeLen = 4;
+            
         for (int i = 0, j = y; i <= snakeLen; i++, j++) {
             matrix[x][j].setBackground(snakeColor);
             snake.add(x+","+j);
@@ -162,7 +158,6 @@ public class ClientPlay {
         this it moves into position and does this each, 
         all at the reference part of the first block, this is done recursively moves
     */
-    
     public void reposition(int x, int y, int index) {
         int[] array = {x, y};
         
@@ -172,7 +167,7 @@ public class ClientPlay {
                 snake.add(x+","+y);
                 foodInMemory--;
             } else
-                matrix[x][y].setBackground(this.instanceGame.getBackgroundGame());            
+                matrix[x][y].setBackground(instanceGame.getBackgroundGame());            
         } else {
             String[] coords = snake.get(index).split(",");
             snake.set(index, x+","+y);
@@ -186,7 +181,6 @@ public class ClientPlay {
         This method gives direction to the snake, the snake further 
         determines whether "ate herself" and if the next block exists
     */
-    
     public void moveSnake(String key) {
         String[] coords = snake.get(0).split(",");
         
@@ -243,7 +237,7 @@ public class ClientPlay {
         
         for(String element : x) {
             String[] coords = element.split(",");
-            matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setBackground(this.instanceGame.getBackgroundGame());     
+            matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setBackground(instanceGame.getBackground());
             matrix[Integer.valueOf(coords[0])][Integer.valueOf(coords[1])].setIcon(null);
         }
         
@@ -256,14 +250,13 @@ public class ClientPlay {
     */
     
     public void restartGame() {                  
-        this.instanceGame.getScheduler().restoreSpeed();
+        instanceGame.getScheduler().restoreSpeed();
         deleteArray(snake);
         deleteArray(foodInBonus);
-        matrix[xFood][yFood].setBackground(this.instanceGame.getBackgroundGame());    
         matrix[xFood][yFood].setIcon(null);
         
         startGame();       
-        this.instanceGame.updateScore(score);
+        instanceGame.updateScore(score);
     }
     
     /*
@@ -272,24 +265,31 @@ public class ClientPlay {
     */
     
     public void youWin() {
-        if (!win && len >= 100) {
+        if (!win && len >= ((matrix.length * matrix[0].length) * 0.25)) {
             
             win = true;
             instanceGame.getScheduler().stopAllTimers();
             instanceGame.removeKeyFocus();
+            instanceGame.restoreColorPanel();
             
-            Object[] options = { "Try again", "Back to menu" };
+            ActionListener[] actions = new ActionListener[]{
+                new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            restartGame();
+                            instanceGame.addKeyboardFocus();
+                        }
+                },
 
-            int r = JOptionPane.showOptionDialog(null, "It looks like you have won", "Wut? ._.",
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                    null, options, 0);
-            
-            if (r == JOptionPane.YES_OPTION){
-                restartGame();
-                instanceGame.addKeyboardFocus();
-            } else {
-                instanceGame.changeScene(new MenuScene());
-            }
+                new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            instanceGame.changeScene(new MenuScene());
+                        }
+                }
+            };
+
+            new Dialog(actions, "You Win", "It looks like you have won");
         }
     }
     
@@ -303,19 +303,25 @@ public class ClientPlay {
             instanceGame.getScheduler().stopAllTimers();
             instanceGame.removeKeyFocus();
             instanceGame.restoreColorPanel();
-
-            Object[] options = { "Try again", "Back to menu" };
-
-            int r = JOptionPane.showOptionDialog(null, "You have lost", "Sorry",
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                    null, options, 0);
             
-            if (r == JOptionPane.YES_OPTION){
-                restartGame();
-                instanceGame.addKeyboardFocus();
-            } else {
-                instanceGame.changeScene(new MenuScene());
-            }
+            ActionListener[] actions = new ActionListener[]{
+                new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            restartGame();
+                            instanceGame.addKeyboardFocus();
+                        }
+                },
+
+                new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            instanceGame.changeScene(new MenuScene());
+                        }
+                }
+            };
+
+            new Dialog(actions, "You Lose", "You lost, but you can try again");
         }
     }
     

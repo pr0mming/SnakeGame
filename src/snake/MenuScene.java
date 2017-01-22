@@ -75,8 +75,6 @@ public class MenuScene extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 App.getInstance().runScene(new GameScene());  
-                System.out.println("Free memory (bytes): " + 
-                Runtime.getRuntime().freeMemory());
             }
         };
         
