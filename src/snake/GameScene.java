@@ -201,7 +201,7 @@ public class GameScene extends JPanel {
     }
     
     public void updateLenght(int l) {
-        len.setText("LENGHT: "+l);
+        len.setText("LENGTH: "+l);
     }
     
     public void addKeyboardFocus() {
