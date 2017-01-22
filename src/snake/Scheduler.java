@@ -23,33 +23,33 @@ public class Scheduler {
         new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                valueSpeed(instanceGame.getPlay().getScore());
+                startBonus();
                 instanceGame.getPlay().moveSnake("Left");  
-                valueSpeed(instanceGame.getPlay().getScore());
-                startBonus();
             }
         },
         new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                valueSpeed(instanceGame.getPlay().getScore());
+                startBonus();
                 instanceGame.getPlay().moveSnake("Right");
-                valueSpeed(instanceGame.getPlay().getScore());
-                startBonus();
             }
         },
         new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                valueSpeed(instanceGame.getPlay().getScore());
+                startBonus();
                 instanceGame.getPlay().moveSnake("Up");
-                valueSpeed(instanceGame.getPlay().getScore());
-                startBonus();
             }
         },
         new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                instanceGame.getPlay().moveSnake("Down");
                 valueSpeed(instanceGame.getPlay().getScore());
                 startBonus();
+                instanceGame.getPlay().moveSnake("Down");
             }
         }
     };
