@@ -3,12 +3,14 @@ package snake;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -57,7 +59,6 @@ public class MenuScene extends JPanel {
         JLabel text = new JLabel("<html><body><center>It may be quite simple but it takes some time.<br> This application is intended to amuse and demonstrate <br> the use of Java Swing & AWT <br>recreating games as simple as Snake</center></body></html>");
         boolean importFont = importFont();
         text.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 23));
-        text.setHorizontalAlignment(SwingConstants.CENTER);
         text.setBackground(Color.white);
         panelText.add(text);
         
@@ -67,7 +68,7 @@ public class MenuScene extends JPanel {
         
         JButton buttonStart = new JButton("START");      
         buttonStart.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 26));
-        buttonStart.setPreferredSize(new Dimension(250, 60));
+        buttonStart.setPreferredSize(new Dimension((int) (rootPanel.getPreferredSize().width * 0.50), 60));
         buttonStart.setBackground(Color.white);
         buttonStart.setBorder(new BordeRadio(10));
         buttonStart.setFocusable(true);
@@ -93,37 +94,9 @@ public class MenuScene extends JPanel {
         });
         panelButtons.add(buttonStart);
         
-        //Yes, you will see soon that will make this button if I can ...
-        JButton buttonSpecial = new JButton("BREAK THIS!");
-        buttonSpecial.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 26));
-        buttonSpecial.setPreferredSize(new Dimension(250, 60));
-        buttonSpecial.setBackground(Color.white);
-        buttonSpecial.setBorder(new BordeRadio(10));
-        buttonSpecial.setFocusable(true);
-        buttonSpecial.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-            }
-        });
-        
-        buttonSpecial.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                buttonSpecial.setBackground(Color.black);
-                buttonSpecial.setForeground(Color.white);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                buttonSpecial.setBackground(Color.white);
-                buttonSpecial.setForeground(Color.black);
-            }
-        });
-        panelButtons.add(buttonSpecial);
-        
-        rootPanel.add(panelLogo, BorderLayout.NORTH);
+        rootPanel.add(panelLogo);
         rootPanel.add(panelText);
-        rootPanel.add(panelButtons, BorderLayout.SOUTH);
+        rootPanel.add(panelButtons);
         
         setBackground(rootPanel.getBackground());
         add(rootPanel);

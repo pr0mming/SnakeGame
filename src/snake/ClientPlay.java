@@ -32,9 +32,9 @@ public class ClientPlay {
     private Random rnd;
     
     public ClientPlay(GameScene instanceGame) {
-        this.matrix = instanceGame.getMatrix();
         this.rnd = new Random();
         this.instanceGame = instanceGame;
+        this.matrix = instanceGame.getMatrix();
         startGame();
     }
     
@@ -101,7 +101,7 @@ public class ClientPlay {
             
             if (x != xFood && y != yFood && !foodInBonus.contains(x+","+y) && !snake.contains(x+","+y)) {
                 foodInBonus.add(x+","+y);
-                matrix[x][y].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)));
+                matrix[x][y].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(matrix[x][y].getSize().width, matrix[x][y].getSize().height, Image.SCALE_SMOOTH)));
                 lim--;
             }
         }
@@ -127,8 +127,10 @@ public class ClientPlay {
             
             if (b % 3 == 0 && !bonus) {
                 createBonus(rnd.nextInt(4 - 2) + 2);
-            } else
-                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)));
+            } else {
+                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(matrix[xFood][yFood].getSize().width, matrix[xFood][yFood].getSize().height, Image.SCALE_REPLICATE)));
+ 
+            }
         }
     }
     

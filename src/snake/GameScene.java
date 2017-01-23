@@ -77,7 +77,7 @@ public class GameScene extends JPanel {
                 matrix[i][j] = new JLabel();               
                 matrix[i][j].setBackground(background);
                 matrix[i][j].setOpaque(true);
-                matrix[i][j].setPreferredSize(new Dimension(3, 3));               
+                matrix[i][j].setSize(new Dimension(17, 15));
                 panelGame.add(matrix[i][j]);
             }
         
