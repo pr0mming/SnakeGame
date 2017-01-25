@@ -1,16 +1,13 @@
 
 package snake;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -58,17 +55,17 @@ public class MenuScene extends JPanel {
         
         JLabel text = new JLabel("<html><body><center>It may be quite simple but it takes some time.<br> This application is intended to amuse and demonstrate <br> the use of Java Swing & AWT <br>recreating games as simple as Snake</center></body></html>");
         boolean importFont = importFont();
-        text.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 23));
+        text.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.03)));
         text.setBackground(Color.white);
         panelText.add(text);
         
         JPanel panelButtons = new JPanel();
-        panelButtons.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelButtons.setBorder(new EmptyBorder(5, 5, 5, 5));
         panelButtons.setBackground(Color.white);
         
         JButton buttonStart = new JButton("START");      
-        buttonStart.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, 26));
-        buttonStart.setPreferredSize(new Dimension((int) (rootPanel.getPreferredSize().width * 0.50), 60));
+        buttonStart.setFont(new Font((importFont)?"SugarpunchDEMO":"Consolas", font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.036)));
+        buttonStart.setPreferredSize(new Dimension((int) (rootPanel.getPreferredSize().width * 0.5), (int) (rootPanel.getPreferredSize().height * 0.06)));
         buttonStart.setBackground(Color.white);
         buttonStart.setBorder(new BordeRadio(10));
         buttonStart.setFocusable(true);
@@ -108,9 +105,11 @@ public class MenuScene extends JPanel {
             font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/SugarpunchDEMO.otf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ga.registerFont(font);
+            
             return true;
         } catch (Exception e) {
             System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
+            
             return false;
         }
     }

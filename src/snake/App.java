@@ -9,6 +9,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ *
+ * @author pr0mming
+ * 
+ * SnakeProject is a project with the purpose to 
+ * fully exploit tools Java (Swing and AWT) specifically ... 
+ * If you think you can help me improve this project it would be great
+ * 
+ * GitHub: https://github.com/pr0mming
+ */
+
 /*
     The scenes I represent as JPanels, just create a class with all the elements 
     and the JFrame will do its job, it is more flexible than opening and closing JFrames.

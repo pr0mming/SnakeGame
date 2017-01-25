@@ -15,6 +15,7 @@ import javax.swing.Timer;
  * 
  * GitHub: https://github.com/pr0mming
  */
+
 public class Scheduler {
     
     private GameScene instanceGame;
@@ -56,14 +57,15 @@ public class Scheduler {
     
     private Timer timerBonus;
     private Timer[] timerMotion;
-    private int timeBonus, goal, delay;
+    private int timeBonus, goal, delay, currentMotion;
     
     public Scheduler(GameScene instanceGame) {
         this.instanceGame = instanceGame;
+        currentMotion = 0;
         delay = 500;
         goal = 100;
-        timerMotion = new Timer[actions.length];
         timeBonus = (900 * 5); //A second can be approximated to 900 milliseconds, multiplied by five, are 13500 milliseconds (5 seconds)
+        timerMotion = new Timer[actions.length];
         
         createMotion();
         createBonus();
@@ -84,11 +86,13 @@ public class Scheduler {
         Time runs enable you chose and others hold ...
     */
     public void actuate(int e) {
-        for (int i = 0; i < timerMotion.length; i++) {
-            if(i == e) 
-                startMotion(i);
-            else 
-                stopMotion(i);    
+        if (timerMotion[currentMotion].isRunning()) {
+            timerMotion[currentMotion].stop();
+            currentMotion = e;
+            timerMotion[currentMotion].start();
+        } else {
+            currentMotion = e;
+            timerMotion[currentMotion].start();
         }
     }
     
@@ -162,6 +166,8 @@ public class Scheduler {
     
     // The delay returns to normal in all movements
     public void restoreSpeed() {
+        delay = 500;
+        
         for (Timer motion : timerMotion) 
             motion.setDelay(delay);
     }

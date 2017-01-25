@@ -20,6 +20,7 @@ import javax.swing.JLabel;
  * 
  * GitHub: https://github.com/pr0mming
  */
+
 public class ClientPlay {
 
     private GameScene instanceGame;
@@ -127,10 +128,8 @@ public class ClientPlay {
             
             if (b % 3 == 0 && !bonus) {
                 createBonus(rnd.nextInt(4 - 2) + 2);
-            } else {
-                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(matrix[xFood][yFood].getSize().width, matrix[xFood][yFood].getSize().height, Image.SCALE_REPLICATE)));
- 
-            }
+            } else 
+                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/food.png")).getImage().getScaledInstance(matrix[xFood][yFood].getSize().width, matrix[xFood][yFood].getSize().height, Image.SCALE_REPLICATE)));             
         }
     }
     

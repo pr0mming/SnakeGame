@@ -77,25 +77,27 @@ public class GameScene extends JPanel {
                 matrix[i][j] = new JLabel();               
                 matrix[i][j].setBackground(background);
                 matrix[i][j].setOpaque(true);
-                matrix[i][j].setSize(new Dimension(17, 15));
+                matrix[i][j].setSize(new Dimension(panelGame.getPreferredSize().width / y, panelGame.getPreferredSize().height / x));
                 panelGame.add(matrix[i][j]);
             }
         
+        int sizeFont = (int) (panelGame.getPreferredSize().height * 0.044);
+        
         score = new JLabel();
         score.setHorizontalAlignment(SwingConstants.CENTER);
-        score.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        score.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, sizeFont));
         score.setForeground(Color.white);
         updateScore(0);
         
         len = new JLabel();
         len.setHorizontalAlignment(SwingConstants.CENTER);
-        len.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
+        len.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, sizeFont));
         len.setForeground(Color.white);
         
         JButton buttonMenu = new JButton("MENU");  
         buttonMenu.setHorizontalAlignment(SwingConstants.CENTER);
-        buttonMenu.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
-        buttonMenu.setPreferredSize(new Dimension(120, 40));
+        buttonMenu.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, sizeFont));
+        buttonMenu.setPreferredSize(new Dimension(panelGame.getPreferredSize().width / 2, (int) (panelGame.getPreferredSize().height * 0.09)));
         buttonMenu.setBorder(new BordeRadio(10));
         buttonMenu.setForeground(Color.white);
         buttonMenu.setBackground(background);
@@ -122,8 +124,8 @@ public class GameScene extends JPanel {
         
         JButton buttonRestart = new JButton("RESTART");   
         buttonRestart.setHorizontalAlignment(SwingConstants.CENTER);
-        buttonRestart.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, 26));
-        buttonRestart.setPreferredSize(new Dimension(120, 40));
+        buttonRestart.setFont(new Font((importFont)?"Aldo the Apache":"Consolas", font.PLAIN, sizeFont));
+        buttonRestart.setPreferredSize(new Dimension(panelGame.getPreferredSize().width / 2, (int) (panelGame.getPreferredSize().height * 0.09)));
         buttonRestart.setBorder(new BordeRadio(10));
         buttonRestart.setForeground(Color.white);
         buttonRestart.setBackground(background);
@@ -189,9 +191,11 @@ public class GameScene extends JPanel {
             font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/AldotheApache.ttf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ga.registerFont(font);
+            
             return true;
         } catch (Exception e) {
             System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
+            
             return false;
         }
     } 

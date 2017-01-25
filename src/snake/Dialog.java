@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * GitHub: https://github.com/pr0mming
  */
+
 public class Dialog extends JDialog {
     
     private ActionListener[] actions;
@@ -101,9 +102,11 @@ public class Dialog extends JDialog {
             font = font.createFont(font.TRUETYPE_FONT, this.getClass().getResource("/resources/SugarpunchDEMO.otf").openStream());
             GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ga.registerFont(font);
+            
             return true;
         } catch (Exception e) {
             System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
+            
             return false;
         }
     }
