@@ -7,7 +7,6 @@ import org.snake.ui.BorderRadio;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -18,13 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class represents the main menu of the game
  */
 
 public class MenuScene extends JPanel {
@@ -50,8 +43,7 @@ public class MenuScene extends JPanel {
         panelText.setBackground(Color.white);
 
         JLabel text = new JLabel("<html><body><center><br> This application is intended to amuse and demonstrate <br> the use of Java Swing & AWT <br>recreating games as simple as Snake</center></body></html>");
-        boolean importFont = importFont();
-        text.setFont(new Font((importFont) ? "SugarpunchDEMO" : "Consolas", Font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.03)));
+        text.setFont(new Font("SugarpunchDEMO", Font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.03)));
         text.setBackground(Color.white);
         panelText.add(text);
 
@@ -60,7 +52,7 @@ public class MenuScene extends JPanel {
         panelButtons.setBackground(Color.white);
 
         JButton buttonStart = new JButton("START");
-        buttonStart.setFont(new Font((importFont) ? "SugarpunchDEMO" : "Consolas", Font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.036)));
+        buttonStart.setFont(new Font("SugarpunchDEMO", Font.PLAIN, (int) (rootPanel.getPreferredSize().height * 0.036)));
         buttonStart.setPreferredSize(new Dimension((int) (rootPanel.getPreferredSize().width * 0.5), (int) (rootPanel.getPreferredSize().height * 0.06)));
         buttonStart.setBackground(Color.white);
         buttonStart.setBorder(new BorderRadio(10));
@@ -101,20 +93,6 @@ public class MenuScene extends JPanel {
             snakeLogo.setIcon(new ImageIcon(new ImageIcon(imageResource).getImage().getScaledInstance((int) (App.getInstance().getPreferredSize().width * 0.63), (int) (App.getInstance().getPreferredSize().height * 0.625), Image.SCALE_DEFAULT)));
             snakeLogo.setHorizontalAlignment(SwingConstants.CENTER);
             panelLogo.add(snakeLogo);
-        }
-    }
-
-    private boolean importFont() {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("/font/SugarpunchDEMO.otf").openStream());
-            GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ga.registerFont(font);
-
-            return true;
-        } catch (Exception e) {
-            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
-
-            return false;
         }
     }
 

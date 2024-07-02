@@ -8,13 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class helps to move the snake in "automatic mode" and manage logic about bonus
  */
 
 public class Scheduler {
@@ -25,33 +19,33 @@ public class Scheduler {
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    valueSpeed(instanceGame.getPlay().getScore());
+                    valueSpeed(instanceGame.getGameManager().getScore());
                     startBonus();
-                    instanceGame.getPlay().moveSnake("Left");
+                    instanceGame.getGameManager().moveSnake("Left");
                 }
             },
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    valueSpeed(instanceGame.getPlay().getScore());
+                    valueSpeed(instanceGame.getGameManager().getScore());
                     startBonus();
-                    instanceGame.getPlay().moveSnake("Right");
+                    instanceGame.getGameManager().moveSnake("Right");
                 }
             },
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    valueSpeed(instanceGame.getPlay().getScore());
+                    valueSpeed(instanceGame.getGameManager().getScore());
                     startBonus();
-                    instanceGame.getPlay().moveSnake("Up");
+                    instanceGame.getGameManager().moveSnake("Up");
                 }
             },
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    valueSpeed(instanceGame.getPlay().getScore());
+                    valueSpeed(instanceGame.getGameManager().getScore());
                     startBonus();
-                    instanceGame.getPlay().moveSnake("Down");
+                    instanceGame.getGameManager().moveSnake("Down");
                 }
             }
     };
@@ -109,9 +103,9 @@ public class Scheduler {
             timeBonus -= timerBonus.getDelay();
             instanceGame.changeColorPanel();
 
-            if (!(instanceGame.getPlay().getBonus()) || timeBonus <= 0) {
-                instanceGame.getPlay().setBonus(false);
-                instanceGame.getPlay().deleteBonus();
+            if (!(instanceGame.getGameManager().getBonus()) || timeBonus <= 0) {
+                instanceGame.getGameManager().setBonus(false);
+                instanceGame.getGameManager().deleteBonus();
                 instanceGame.restoreColorPanel();
                 timeBonus = (900 * 5);
                 timerBonus.stop();
@@ -121,7 +115,7 @@ public class Scheduler {
 
     // Activates the timer bonus
     public void startBonus() {
-        if (instanceGame.getPlay().getBonus() && !timerBonus.isRunning())
+        if (instanceGame.getGameManager().getBonus() && !timerBonus.isRunning())
             timerBonus.start();
     }
 

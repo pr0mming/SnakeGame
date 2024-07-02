@@ -8,7 +8,6 @@
     <packaging>jar</packaging>
 
     <name>Snake</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,7 +38,6 @@
                             <mainClass>org.snake.App</mainClass>
                         </manifest>
                     </archive>
-                    <executable>true</executable>
                 </configuration>
             </plugin>
         </plugins>

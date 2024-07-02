@@ -6,7 +6,6 @@ import org.snake.App;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,15 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class represents a customizable dialog to show any message
  */
-
 public class Dialog extends JDialog {
 
     private final ActionListener[] actions;
@@ -42,10 +34,9 @@ public class Dialog extends JDialog {
         panel.setPreferredSize(new Dimension(100, 300));
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
         panel.setBackground(Color.black);
-        boolean importFont = importFont();
 
         JLabel label = new JLabel(message);
-        label.setFont(new Font((importFont) ? "SugarpunchDEMO" : "Consolas", Font.PLAIN, 20));
+        label.setFont(new Font("SugarpunchDEMO", Font.PLAIN, 20));
         label.setForeground(Color.white);
         panel.add(label);
 
@@ -53,7 +44,7 @@ public class Dialog extends JDialog {
 
         for (int i = 0; i < msgButtons.length; i++) {
             JButton button = new JButton(msgButtons[i]);
-            button.setFont(new Font((importFont) ? "SugarpunchDEMO" : "Consolas", Font.PLAIN, 20));
+            button.setFont(new Font("SugarpunchDEMO", Font.PLAIN, 20));
             button.setPreferredSize(new Dimension(label.getPreferredSize().width / 2, 50));
             button.setBorder(new BorderRadio(10));
             button.setForeground(Color.white);
@@ -90,20 +81,6 @@ public class Dialog extends JDialog {
         setVisible(true);
         pack();
 
-    }
-
-    private boolean importFont() {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("//SugarpunchDEMO.otf").openStream());
-            GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ga.registerFont(font);
-
-            return true;
-        } catch (Exception e) {
-            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
-
-            return false;
-        }
     }
 
 }

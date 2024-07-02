@@ -7,20 +7,11 @@ import java.awt.Insets;
 import javax.swing.border.Border;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class is a boilerplate taken from Internet
+ * to see the rounded edges of the button "Restart" and others
  */
-
 public class BorderRadio implements Border {
 
-    /*
-        If you see the rounded edges of the button "Restart" this class does!
-    */
     private final int radio;
 
     public BorderRadio(int radio) {

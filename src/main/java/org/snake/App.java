@@ -3,32 +3,17 @@ package org.snake;
 
 import org.snake.scenes.MenuScene;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * The scenes I represent as JPanels, just create a class with all the elements
+ * and the JFrame will do its job, it is more flexible than opening and closing JFrames.
+ * This main class manages the scenes, and it works with an instance, which is passed as parameter
+ * in each constructor of the scenes and from that instance it is called to the method
+ * that runs the scenes (instance objects of certain classes)
  */
-
-/*
-    The scenes I represent as JPanels, just create a class with all the elements 
-    and the JFrame will do its job, it is more flexible than opening and closing JFrames.
-
-    This main class manages the scenes, and it works with an instance, which is passed as parameter 
-    in each constructor of the scenes and from that instance it is called to the method 
-    that runs the scenes (instance objects of certain classes)
-*/
 
 public class App extends JFrame {
 
@@ -66,8 +51,30 @@ public class App extends JFrame {
         setVisible(true);
         setLocation((int) screen[0] / 2, (int) screen[1] / 4);
         setResizable(false);
+        importFont();
 
         pack();
+    }
+
+    private void importFont() {
+        try {
+            var fontList = List.of("/font/Sugarpunch.otf", "/font/AldotheApache.ttf");
+
+            for (String fontPath : fontList) {
+                var fontResource = this.getClass().getResource(fontPath);
+
+                if (fontResource == null) {
+                    throw new Exception();
+                }
+
+                Font font = Font.createFont(Font.TRUETYPE_FONT, fontResource.openStream());
+                GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                ga.registerFont(font);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Oops ... an error has occurred in the importation of typography.");
+        }
     }
 
     public void runScene(JPanel scene) {
@@ -92,11 +99,6 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                getInstance().runScene(new MenuScene());
-            }
-        });
+        SwingUtilities.invokeLater(() -> getInstance().runScene(new MenuScene()));
     }
 }

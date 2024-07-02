@@ -14,13 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class manage all the rules of the game
  */
 
 public class GameManager {
@@ -78,7 +72,7 @@ public class GameManager {
         }
 
         len = snake.size();
-        instanceGame.updateLenght(len);
+        instanceGame.updateLength(len);
         youWin();
     }
 
@@ -86,6 +80,18 @@ public class GameManager {
     public void incrementScore(int p) {
         score += p;
         instanceGame.updateScore(score);
+    }
+
+    private ImageIcon getImageResource(int width, int height) {
+        var imageResource = getClass().getResource("/images/food.png");
+
+        if (imageResource != null) {
+            return new ImageIcon(new ImageIcon(imageResource)
+                    .getImage()
+                    .getScaledInstance(width, height, Image.SCALE_SMOOTH));
+        }
+
+        return null;
     }
 
     /*
@@ -102,7 +108,7 @@ public class GameManager {
 
             if (x != xFood && y != yFood && !foodInBonus.contains(x + "," + y) && !snake.contains(x + "," + y)) {
                 foodInBonus.add(x + "," + y);
-                matrix[x][y].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/images/food.png")).getImage().getScaledInstance(matrix[x][y].getSize().width, matrix[x][y].getSize().height, Image.SCALE_SMOOTH)));
+                matrix[x][y].setIcon(getImageResource(matrix[x][y].getSize().width, matrix[x][y].getSize().height));
                 lim--;
             }
         }
@@ -129,7 +135,7 @@ public class GameManager {
             if (b % 3 == 0 && !bonus) {
                 createBonus(rnd.nextInt(4 - 2) + 2);
             } else
-                matrix[xFood][yFood].setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/images/food.png")).getImage().getScaledInstance(matrix[xFood][yFood].getSize().width, matrix[xFood][yFood].getSize().height, Image.SCALE_REPLICATE)));
+                matrix[xFood][yFood].setIcon(getImageResource(matrix[xFood][yFood].getSize().width, matrix[xFood][yFood].getSize().height));
         }
     }
 
@@ -152,7 +158,7 @@ public class GameManager {
 
         direction = "Left";
         len = snake.size();
-        instanceGame.updateLenght(len);
+        instanceGame.updateLength(len);
     }
 
     /*
@@ -182,7 +188,7 @@ public class GameManager {
         determines whether "ate herself" and if the next block exists
     */
     public void moveSnake(String key) {
-        String[] cords = snake.get(0).split(",");
+        String[] cords = snake.getFirst().split(",");
 
         if (key.equals("Right") && !direction.equals("Left") && Integer.parseInt(cords[1]) < matrix[0].length - 1) {
             if (!snake.contains(cords[0] + "," + (Integer.parseInt(cords[1]) + 1))) {
@@ -236,12 +242,12 @@ public class GameManager {
     public void deleteArray(ArrayList<String> x) {
 
         for (String element : x) {
-            String[] coords = element.split(",");
-            matrix[Integer.parseInt(coords[0])][Integer.parseInt(coords[1])].setBackground(instanceGame.getBackground());
-            matrix[Integer.parseInt(coords[0])][Integer.parseInt(coords[1])].setIcon(null);
+            String[] cords = element.split(",");
+            matrix[Integer.parseInt(cords[0])][Integer.parseInt(cords[1])].setBackground(instanceGame.getBackground());
+            matrix[Integer.parseInt(cords[0])][Integer.parseInt(cords[1])].setIcon(null);
         }
 
-        x.removeAll(x);
+        x.clear();
     }
     
     /*
@@ -288,7 +294,7 @@ public class GameManager {
     public void youLose() {
         if (!lose) {
             /*
-                The boolean is an aid to avoid the appearance of multiple JoptionPane in case of playing "wildly"
+                The boolean is an aid to avoid the appearance of multiple JOptionPane in case of playing "wildly"
             */
             lose = true;
             instanceGame.getScheduler().stopAllTimers();

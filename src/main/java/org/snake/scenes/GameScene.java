@@ -11,7 +11,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import javax.swing.BorderFactory;
@@ -22,32 +21,27 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- * @author pr0mming
- * <p>
- * SnakeProject is a project with the purpose to
- * fully exploit tools Java (Swing and AWT) specifically ...
- * If you think you can help me improve this project it would be great
- * <p>
- * GitHub: https://github.com/pr0mming
+ * This class represents the game scene,
+ * basically it creates the matrix where the snake will be traveling
+ * and also manage some button events
  */
-
 public class GameScene extends JPanel {
 
     private JPanel panelGame;
     private JLabel[][] matrix;
     private JLabel score, len;
-    private GameManager play;
+    private GameManager gameManager;
     private Color background;
     private Scheduler motion;
     private KeyboardFocusManager keyboardFocus;
-    private ControlKeysManager keyEventDispatcher;
+    private ControlKeysManager controlKeysManager;
 
     public GameScene() {
         createScene();
 
         motion = new Scheduler(this);
-        play = new GameManager(this);
-        keyEventDispatcher = new ControlKeysManager(this);
+        gameManager = new GameManager(this);
+        controlKeysManager = new ControlKeysManager(this);
         keyboardFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
         addKeyboardFocus();
@@ -72,7 +66,6 @@ public class GameScene extends JPanel {
 
         //Buttons
         matrix = new JLabel[x][y];
-        boolean importFont = importFont();
 
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix[i].length; j++) {
@@ -87,18 +80,18 @@ public class GameScene extends JPanel {
 
         score = new JLabel();
         score.setHorizontalAlignment(SwingConstants.CENTER);
-        score.setFont(new Font((importFont) ? "Aldo the Apache" : "Consolas", Font.PLAIN, sizeFont));
+        score.setFont(new Font("Aldo the Apache", Font.PLAIN, sizeFont));
         score.setForeground(Color.white);
         updateScore(0);
 
         len = new JLabel();
         len.setHorizontalAlignment(SwingConstants.CENTER);
-        len.setFont(new Font((importFont) ? "Aldo the Apache" : "Consolas", Font.PLAIN, sizeFont));
+        len.setFont(new Font("Aldo the Apache", Font.PLAIN, sizeFont));
         len.setForeground(Color.white);
 
         JButton buttonMenu = new JButton("MENU");
         buttonMenu.setHorizontalAlignment(SwingConstants.CENTER);
-        buttonMenu.setFont(new Font((importFont) ? "Aldo the Apache" : "Consolas", Font.PLAIN, sizeFont));
+        buttonMenu.setFont(new Font("Aldo the Apache", Font.PLAIN, sizeFont));
         buttonMenu.setPreferredSize(new Dimension(panelGame.getPreferredSize().width / 2, (int) (panelGame.getPreferredSize().height * 0.09)));
         buttonMenu.setBorder(new BorderRadio(10));
         buttonMenu.setForeground(Color.white);
@@ -122,13 +115,13 @@ public class GameScene extends JPanel {
 
         JButton buttonRestart = new JButton("RESTART");
         buttonRestart.setHorizontalAlignment(SwingConstants.CENTER);
-        buttonRestart.setFont(new Font((importFont) ? "Aldo the Apache" : "Consolas", Font.PLAIN, sizeFont));
+        buttonRestart.setFont(new Font("Aldo the Apache", Font.PLAIN, sizeFont));
         buttonRestart.setPreferredSize(new Dimension(panelGame.getPreferredSize().width / 2, (int) (panelGame.getPreferredSize().height * 0.09)));
         buttonRestart.setBorder(new BorderRadio(10));
         buttonRestart.setForeground(Color.white);
         buttonRestart.setBackground(background);
         buttonRestart.setFocusable(true);
-        buttonRestart.addActionListener(e -> play.restartGame());
+        buttonRestart.addActionListener(e -> gameManager.restartGame());
 
         buttonRestart.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -165,49 +158,35 @@ public class GameScene extends JPanel {
     /*
         Here I am not completely convinced if the memory is successfully released with this method. 
         Practically if there are active event listeners or timers, the GC will not choose them, 
-        I have to resort to manually deactivating them and equaling them to null. Otherwise 
-        this scene would still exist in memory and you could still "play blindly"
+        I have to resort to manually deactivating them and equaling them to null. Otherwise,
+        this scene would still exist in memory, and you could still "play blindly"
     */
     public void changeScene(JPanel scene) {
         removeKeyFocus();
         motion.stopAllTimers();
 
         motion = null;
-        play = null;
+        gameManager = null;
         keyboardFocus = null;
-        keyEventDispatcher = null;
+        controlKeysManager = null;
 
         App.getInstance().runScene(scene);
-    }
-
-    private boolean importFont() {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResource("/font/AldotheApache.ttf").openStream());
-            GraphicsEnvironment ga = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ga.registerFont(font);
-
-            return true;
-        } catch (Exception e) {
-            System.out.println("Oops ... an error has occurred in the importation of typography. It will try to pick another ;)");
-
-            return false;
-        }
     }
 
     public void updateScore(int p) {
         score.setText("SCORE: " + p);
     }
 
-    public void updateLenght(int l) {
+    public void updateLength(int l) {
         len.setText("LENGTH: " + l);
     }
 
     public void addKeyboardFocus() {
-        this.keyboardFocus.addKeyEventDispatcher(keyEventDispatcher);
+        this.keyboardFocus.addKeyEventDispatcher(controlKeysManager);
     }
 
     public void removeKeyFocus() {
-        this.keyboardFocus.removeKeyEventDispatcher(keyEventDispatcher);
+        this.keyboardFocus.removeKeyEventDispatcher(controlKeysManager);
     }
 
     public void changeColorPanel() {
@@ -222,8 +201,8 @@ public class GameScene extends JPanel {
         return this.motion;
     }
 
-    public GameManager getPlay() {
-        return this.play;
+    public GameManager getGameManager() {
+        return this.gameManager;
     }
 
     public Color getBackgroundGame() {
